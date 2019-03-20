@@ -1,26 +1,32 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-console.log("messy");
+
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import NewQuestion from "./components/NewQuestion";
+import Home from "./components/Home";
+import NewTest from "./components/NewTest";
+import EditQuestion from "./components/EditQuestion";
+import Navigation from "./components/Navigation";
+import Error from "./components/Error";
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <BrowserRouter>
+        <React.Fragment>
+          <Navigation />
+          <Switch>
+            <Route path="/" component={Home} exact />
+            <Route path="/newQuestion" component={NewQuestion} />
+            <Route path="/questionGroups" component={NewTest} />
+            <Route path="/editQuestion/:id" component={EditQuestion} />
+            <Route component={Error} />
+          </Switch>
+        </React.Fragment>
+      </BrowserRouter>
     );
   }
 }
