@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NewQuestion from "./components/NewQuestion";
 import Home from "./components/Home";
-import NewTest from "./components/NewTest";
+import QuestionsOverview from "./components/QuestionsOverview";
 import EditQuestion from "./components/EditQuestion";
 import Navigation from "./components/Navigation";
 import Error from "./components/Error";
@@ -21,7 +21,7 @@ class App extends Component {
           <Switch>
             <Route path="/" component={Home} exact />
             <Route path="/newQuestion" component={NewQuestion} />
-            <Route path="/questionGroups" component={NewTest} />
+            <Route path="/questionGroups" component={QuestionsOverview} />
             <Route path="/editQuestion/:id" component={EditQuestion} />
             <Route component={Error} />
           </Switch>

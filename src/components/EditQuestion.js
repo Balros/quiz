@@ -10,7 +10,7 @@ class EditQuestion extends Component {
   //for good UX we can preload last question but maybe it's not necessary
   constructor(props) {
     super(props);
-    const questionGroupId = this.props.match.params.id;
+    // const questionGroupId = this.props.match.params.id;
     //TODO load by questionGroupId
     this.state = {
       loadQuestions: dataFile.loadQuestions.slice(2, 4),
@@ -18,32 +18,45 @@ class EditQuestion extends Component {
       loadQuestionTypes: dataFile.loadQuestionTypes
     };
   }
-  componentDidMount() {}
+  getQuestionVersions = () => {
+    //TODO zmenit na generic verziu vid. to co sme robili s pintom
+    // this.props.questionUri = "";
+    let halo = "WifqB";
+    let halo2 = "/api/getQuestionVersions/" + halo;
+    fetch(halo2).then(response => {});
+  };
+  componentDidMount() {
+    const questionVersions = this.getQuestionVersions();
+    this.setState({
+      questionVersions: questionVersions
+    });
+  }
   render() {
     return (
       <React.Fragment>
-        <NewQuestion
+        {/* <NewQuestion
           questionGroup={this.props.match.params.id}
           question={dataFile.loadQuestions[2]} //TODO hardcoded, change when database is available
           topics={dataFile.loadTopics}
           answerTypes={dataFile.loadQuestionTypes}
           answers={dataFile.loadMultipleAnswer}
-        />
+        /> */}
         {this.state.loadQuestions.map(question => {
           return (
             <Question
               key={question.ID}
               //TODO toto nieje dobre ani topics ani questionType
-              question={question}
-              answers={dataFile.loadMultipleAnswer}
-              topics={this.state.loadTopics //TODO hardcoded, change when database is available
-                .slice(question.topic_id - 1)
-                .map(topic => {
-                  return {
-                    value: topic.id,
-                    displayValue: topic.topic_name
-                  };
-                })}
+              // question={question}
+              // answers={question.answers}
+              // answers={[]}
+              // topics={this.state.loadTopics //TODO hardcoded, change when database is available
+              //   .slice(question.topic_id - 1)
+              //   .map(topic => {
+              //     return {
+              //       value: topic.id,
+              //       displayValue: topic.topic_name
+              //     };
+              //   })}
               questionType={this.state.loadQuestionTypes //TODO hardcoded, change when database is available
                 .slice(question.question_types_id - 1)
                 .map(questionType => {

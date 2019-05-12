@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import Select from "../formComponents/Select";
-import TextInput from "../formComponents/TextInput";
 import "../App.css";
 import AnswerComponent from "../AnswerComponent";
 
 class Question extends Component {
   render() {
-    console.log(this.props.answers);
     return (
       <div className="question">
-        <label>
+        {/* <label>
           {"Title"}
           <div className="form-group">
             <input
@@ -36,7 +34,7 @@ class Question extends Component {
         <label>
           {"Topic"}
           <Select name="topic" options={this.props.topics} disabled={true} />
-        </label>
+        </label> */}
         <label>
           {"Type of question"}
           <Select
@@ -46,11 +44,11 @@ class Question extends Component {
             disabled={true}
           />
         </label>
-        {this.props.answers.map(answer => (
+        {/* {this.props.answers.map(answer => (
           <div>
-            <AnswerComponent value={answer.answer_text} disabled />
+            <AnswerComponent value={answer.text} disabled />
           </div>
-        ))}
+        ))} */}
       </div>
     );
   }
