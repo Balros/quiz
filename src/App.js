@@ -7,6 +7,7 @@ import QuestionsOverview from "./components/QuestionsOverview";
 import EditQuestion from "./components/EditQuestion";
 import Navigation from "./components/Navigation";
 import Error from "./components/Error";
+import CreateQuestionAssignment from "./components/CreateQuestionAssignment";
 
 class App extends Component {
   constructor(props) {
@@ -20,9 +21,17 @@ class App extends Component {
           <Navigation />
           <Switch>
             <Route path="/" component={Home} exact />
-            <Route path="/newQuestion" component={NewQuestion} />
             <Route path="/questionGroups" component={QuestionsOverview} />
+            <Route path="/newQuestion" component={NewQuestion} />
             <Route path="/editQuestion/:id" component={EditQuestion} />
+            <Route
+              path="/editQuestionAssignment/:id"
+              component={CreateQuestionAssignment}
+            />
+            <Route
+              path="/newQuestionAssignment"
+              component={CreateQuestionAssignment}
+            />
             <Route component={Error} />
           </Switch>
         </React.Fragment>

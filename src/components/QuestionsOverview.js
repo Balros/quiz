@@ -10,10 +10,13 @@ import {
   Row,
   Col
 } from "reactstrap";
-function AssignmentPreview({ description, startTime, endTime, questions }) {
+function AssignmentPreview({ id, description, startTime, endTime, questions }) {
   return (
     <React.Fragment>
       <h5>Assignment</h5>
+      <Button color="primary" tag={Link} to={"/editQuestionAssignment/" + id}>
+        Edit Question Assignment
+      </Button>
       <div>{description}</div>
       <div>{startTime}</div>
       <div>{endTime}</div>
@@ -29,7 +32,7 @@ function AssignmentPreview({ description, startTime, endTime, questions }) {
               <tbody>
                 {questions.approved.map(question => {
                   return (
-                    <tr>
+                    <tr key={question.id}>
                       <td>
                         <Link to={"/editQuestion/" + question.id}>
                           {"Question name: " + question.label}
@@ -51,7 +54,7 @@ function AssignmentPreview({ description, startTime, endTime, questions }) {
               <tbody>
                 {questions.notApproved.map(question => {
                   return (
-                    <tr>
+                    <tr key={question.id}>
                       <td>
                         <Link to={"/editQuestion/" + question.id}>
                           {"Question name: " + question.label}

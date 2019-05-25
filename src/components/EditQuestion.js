@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import NewQuestion from "./NewQuestion";
 import * as dataFile from "../data/data";
-import Question from "./Question";
+import SavedQuestion from "./SavedQuestion";
+import { Button } from "reactstrap";
 class EditQuestion extends Component {
   //TODO this.props.match.params.id marks id questionsGroups,
   //then you need to look for last question from that group and load that question
@@ -15,7 +16,9 @@ class EditQuestion extends Component {
     this.state = {
       loadQuestions: dataFile.loadQuestions.slice(2, 4),
       loadTopics: dataFile.loadTopics,
-      loadQuestionTypes: dataFile.loadQuestionTypes
+      loadQuestionTypes: dataFile.loadQuestionTypes,
+      questionVersions: [],
+      isEdit: false
     };
   }
   getQuestionVersions = () => {
@@ -23,48 +26,56 @@ class EditQuestion extends Component {
     // this.props.questionUri = "";
     let halo = "WifqB";
     let halo2 = "/api/getQuestionVersions/" + halo;
-    fetch(halo2).then(response => {});
+    fetch(halo2).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data) {
+              this.setState({
+                questionVersions: data
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    });
   };
   componentDidMount() {
-    const questionVersions = this.getQuestionVersions();
-    this.setState({
-      questionVersions: questionVersions
-    });
+    this.getQuestionVersions();
   }
   render() {
+    let question =
+      this.state.questionVersions && this.state.questionVersions.length
+        ? this.state.questionVersions[0]
+        : null;
+
     return (
       <React.Fragment>
-        {/* <NewQuestion
-          questionGroup={this.props.match.params.id}
-          question={dataFile.loadQuestions[2]} //TODO hardcoded, change when database is available
-          topics={dataFile.loadTopics}
-          answerTypes={dataFile.loadQuestionTypes}
-          answers={dataFile.loadMultipleAnswer}
-        /> */}
-        {this.state.loadQuestions.map(question => {
+        <Button onClick={() => this.setState({ isEdit: !this.state.isEdit })}>
+          Edit question
+        </Button>
+        {this.state.isEdit && question ? (
+          <NewQuestion
+            questionGroup={this.props.match.params.id}
+            title={question.title}
+            text={question.text}
+            answers={question.answers}
+            topic={question.topic}
+            questionType={question.questionType}
+          />
+        ) : null}
+        {this.state.questionVersions.map(question => {
           return (
-            <Question
-              key={question.ID}
-              //TODO toto nieje dobre ani topics ani questionType
-              // question={question}
-              // answers={question.answers}
-              // answers={[]}
-              // topics={this.state.loadTopics //TODO hardcoded, change when database is available
-              //   .slice(question.topic_id - 1)
-              //   .map(topic => {
-              //     return {
-              //       value: topic.id,
-              //       displayValue: topic.topic_name
-              //     };
-              //   })}
-              questionType={this.state.loadQuestionTypes //TODO hardcoded, change when database is available
-                .slice(question.question_types_id - 1)
-                .map(questionType => {
-                  return {
-                    value: questionType.id,
-                    displayValue: questionType.question_type
-                  };
-                })}
+            <SavedQuestion
+              key={question.id}
+              title={question.title}
+              text={question.text}
+              answers={question.answers}
+              topic={question.topic}
+              questionType={question.questionType}
             />
           );
         })}

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import TextInput from "./formComponents/TextInput";
 import { InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
 
 export class AnswerComponent extends Component {
@@ -23,6 +22,7 @@ export class AnswerComponent extends Component {
               name={this.props.checkboxName}
               checked={this.props.correct}
               onChange={this.props.onChange}
+              readOnly={this.props.readOnly}
             />
           </InputGroupText>
         </InputGroupAddon>

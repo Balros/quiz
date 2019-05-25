@@ -46,7 +46,7 @@ class NewQuestion extends Component {
         })
       },
       question: {
-        value: "",
+        value: this.props.text ? this.props.text : "",
         placeholder: "What is your question",
         valid: false,
         touched: false,
@@ -99,11 +99,11 @@ class NewQuestion extends Component {
       return {
         text: this.state.formControls[answer["answerInputName"]].value,
         correct: this.state.formControls[answer["answerCheckboxName"]].value
-        // correct: 0
       };
     });
     let data = {
       author: "Adam",
+      questionVersion: this.props.questionGroup,
       question: this.state.formControls["question"].value,
       topic: this.state.formControls["topic"].value,
       questionType: this.state.formControls["questionType"].value,
@@ -128,7 +128,7 @@ class NewQuestion extends Component {
     let answer = {
       id: this.state.answers.length,
       answer_text: "",
-      correct: "0"
+      correct: false
     };
     let updatedControls = this.state.formControls;
     let updatedAnswers = this.state.answers;
@@ -162,7 +162,7 @@ class NewQuestion extends Component {
       }
     };
     formControls[answerCheckboxName] = {
-      value: answer.id,
+      value: answer.correct,
       valid: true,
       touched: true,
       validationRules: {}
@@ -179,17 +179,17 @@ class NewQuestion extends Component {
 
   getTopics = () => {
     fetch("/api/topics").then(response => {
-      this.populateSelect(response, "topic");
+      this.populateSelect(response, "topic", this.props.topic);
     });
   };
 
   getQuestionTypes = () => {
     fetch("/api/questionTypes").then(response => {
-      this.populateSelect(response, "questionType");
+      this.populateSelect(response, "questionType", this.props.questionType);
     });
   };
 
-  populateSelect(response, selectElement) {
+  populateSelect(response, selectElement, propValue) {
     if (response.ok) {
       response
         .json()
@@ -200,6 +200,7 @@ class NewQuestion extends Component {
               displayValue: item.name
             };
           });
+          console.log(options);
           const updatedControls = {
             ...this.state.formControls
           };
@@ -207,7 +208,7 @@ class NewQuestion extends Component {
             ...updatedControls[selectElement]
           };
           updatedFormElement.options = options;
-          updatedFormElement.value = options[0].value;
+          updatedFormElement.value = propValue;
           updatedControls[selectElement] = updatedFormElement;
           this.setState({
             formControls: updatedControls
@@ -218,13 +219,41 @@ class NewQuestion extends Component {
         });
     }
   }
+  addExistingAnswers(answers) {
+    let tmpAnswer = {};
+    answers.map((answer, index) => {
+      tmpAnswer = {
+        id: index,
+        answer_text: answer.text,
+        correct: answer.correct
+      };
+      let updatedControls = this.state.formControls;
+      let updatedAnswers = this.state.answers;
+
+      this.addAnswer(
+        updatedControls,
+        updatedAnswers,
+        tmpAnswer,
+        updatedAnswers.length,
+        false
+      );
+
+      this.setState({
+        formControls: updatedControls,
+        answers: updatedAnswers,
+        formIsValid: false
+      });
+    });
+  }
 
   componentDidMount() {
     this.getTopics();
     this.getQuestionTypes();
+    this.addExistingAnswers(this.props.answers);
   }
 
   render() {
+    console.log(this.state.formControls);
     return (
       <Form>
         <Card>
