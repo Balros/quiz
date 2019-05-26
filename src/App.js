@@ -3,39 +3,68 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NewQuestion from "./components/NewQuestion";
 import Home from "./components/Home";
-import QuestionsOverview from "./components/QuestionsOverview";
+import QuestionsOverview from "./components/QuestionsOverview.jsx";
 import EditQuestion from "./components/EditQuestion";
-import Navigation from "./components/Navigation";
 import Error from "./components/Error";
 import CreateQuestionAssignment from "./components/CreateQuestionAssignment";
+import { UserTypeContext, userTypes } from "./user-type-context";
+import Header from "./components/header";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+
+    this.toggleUserType = () => {
+      this.setState(state => ({
+        userType:
+          state.userType === userTypes.student
+            ? userTypes.teacher
+            : userTypes.student
+      }));
+    };
+    localStorage.setItem("userType", userTypes.student);
+    this.state = {
+      userType: localStorage.getItem("userType"),
+      toggleUserType: this.toggleUserType
+    };
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.userType !== prevState.userType) {
+      // Whatever storage mechanism you end up deciding to use.
+      localStorage.setItem("userType", this.state.userType);
+    }
   }
   render() {
     return (
-      <BrowserRouter>
-        <React.Fragment>
-          <Navigation />
-          <Switch>
-            <Route path="/" component={Home} exact />
-            <Route path="/questionGroups" component={QuestionsOverview} />
-            <Route path="/newQuestion" component={NewQuestion} />
-            <Route path="/editQuestion/:id" component={EditQuestion} />
-            <Route
-              path="/editQuestionAssignment/:id"
-              component={CreateQuestionAssignment}
-            />
-            <Route
-              path="/newQuestionAssignment"
-              component={CreateQuestionAssignment}
-            />
-            <Route component={Error} />
-          </Switch>
-        </React.Fragment>
-      </BrowserRouter>
+      <UserTypeContext.Provider value={this.state}>
+        <BrowserRouter>
+          <React.Fragment>
+            <Header />
+            <Switch>
+              <Route path="/" component={Home} exact />
+              <Route
+                path="/questionGroups"
+                render={() => (
+                  <QuestionsOverview
+                    userType={localStorage.getItem("userType")}
+                  />
+                )}
+              />
+              <Route path="/newQuestion" component={NewQuestion} />
+              <Route path="/editQuestion/:id" component={EditQuestion} />
+              <Route
+                path="/editQuestionAssignment/:id"
+                component={CreateQuestionAssignment}
+              />
+              <Route
+                path="/newQuestionAssignment"
+                component={CreateQuestionAssignment}
+              />
+              <Route component={Error} />
+            </Switch>
+          </React.Fragment>
+        </BrowserRouter>
+      </UserTypeContext.Provider>
     );
   }
 }

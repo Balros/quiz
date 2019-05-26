@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -10,13 +10,24 @@ import {
   Row,
   Col
 } from "reactstrap";
-function AssignmentPreview({ id, description, startTime, endTime, questions }) {
+import { UserTypeContext, userTypes } from "../user-type-context.jsx";
+
+function AssignmentPreview({
+  id,
+  description,
+  startTime,
+  endTime,
+  questions,
+  isTeacher
+}) {
   return (
     <React.Fragment>
       <h5>Assignment</h5>
-      <Button color="primary" tag={Link} to={"/editQuestionAssignment/" + id}>
-        Edit Question Assignment
-      </Button>
+      {isTeacher ? (
+        <Button color="primary" tag={Link} to={"/editQuestionAssignment/" + id}>
+          Edit Question Assignment
+        </Button>
+      ) : null}
       <div>{description}</div>
       <div>{startTime}</div>
       <div>{endTime}</div>
@@ -83,7 +94,14 @@ function AssignmentPreview({ id, description, startTime, endTime, questions }) {
     </React.Fragment>
   );
 }
-function TopicPreview({ id, topicLabel, assignment, toggle, collapse }) {
+function TopicPreview({
+  id,
+  topicLabel,
+  assignment,
+  toggle,
+  collapse,
+  isTeacher
+}) {
   return (
     <React.Fragment>
       <Button color="primary" onClick={toggle}>
@@ -93,13 +111,13 @@ function TopicPreview({ id, topicLabel, assignment, toggle, collapse }) {
         <Card>
           <CardBody>
             <h4>{topicLabel}</h4>
-            {!assignment ? (
+            {!assignment && isTeacher ? (
               <Button color="primary" tag={Link} to={"/newQuestionAssignment"}>
                 Create Question Assignment
               </Button>
-            ) : (
-              <AssignmentPreview {...assignment} />
-            )}
+            ) : assignment ? (
+              <AssignmentPreview {...assignment} isTeacher={isTeacher} />
+            ) : null}
           </CardBody>
         </Card>
       </Collapse>
@@ -109,6 +127,7 @@ function TopicPreview({ id, topicLabel, assignment, toggle, collapse }) {
 class QuestionsOverview extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props.userType);
     this.state = {
       topics: [],
       topicCollapse: []
@@ -120,7 +139,17 @@ class QuestionsOverview extends Component {
     this.setState({ topicCollapse: updatedTopicCollapse });
   };
   getQuestionGroups = () => {
-    fetch("/api/questionGroups").then(response => {
+    console.log(this.props.userType);
+    fetch("/api/questionGroups/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token: this.props.userType
+      })
+    }).then(response => {
       if (response.ok) {
         response
           .json()
@@ -138,6 +167,9 @@ class QuestionsOverview extends Component {
   };
   componentDidMount() {
     this.getQuestionGroups();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.userType !== this.props.userType) this.getQuestionGroups();
   }
   render() {
     // return (
@@ -159,13 +191,18 @@ class QuestionsOverview extends Component {
     // );
     return (
       <React.Fragment>
+        {this.props.userType === userTypes.teacher ? (
+          <p>Is teacher.</p>
+        ) : (
+          <p>Is student.</p>
+        )}
         <ul>
           {this.state.topics.map((topic, index) => {
             return (
               <li key={topic.id}>
                 <TopicPreview
                   {...topic}
-                  isTeacher={false}
+                  isTeacher={this.props.userType === "teacher" ? true : false}
                   toggle={this.toggle(index)}
                   collapse={this.state.topicCollapse[index]}
                 />
@@ -177,4 +214,6 @@ class QuestionsOverview extends Component {
     );
   }
 }
+QuestionsOverview.contextType = UserTypeContext;
+
 export default QuestionsOverview;
