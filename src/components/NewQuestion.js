@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import validate from "../validate";
 import "../App.css";
-import * as dataFile from "../data/data";
 import AnswerComponent from "../AnswerComponent";
 import {
   Button,
@@ -38,12 +37,7 @@ class NewQuestion extends Component {
         validationRules: {
           isRequired: true
         },
-        options: dataFile.loadQuestionTypes.map(function(value) {
-          return {
-            value: value.id,
-            displayValue: value.question_type
-          };
-        })
+        options: []
       },
       question: {
         value: this.props.text ? this.props.text : "",
@@ -249,7 +243,7 @@ class NewQuestion extends Component {
   componentDidMount() {
     this.getTopics();
     this.getQuestionTypes();
-    this.addExistingAnswers(this.props.answers);
+    if (this.props.questionGroup) this.addExistingAnswers(this.props.answers);
   }
 
   render() {

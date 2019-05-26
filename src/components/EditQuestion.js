@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import NewQuestion from "./NewQuestion";
-import * as dataFile from "../data/data";
 import SavedQuestion from "./SavedQuestion";
 import { Button } from "reactstrap";
 class EditQuestion extends Component {
@@ -14,9 +13,9 @@ class EditQuestion extends Component {
     // const questionGroupId = this.props.match.params.id;
     //TODO load by questionGroupId
     this.state = {
-      loadQuestions: dataFile.loadQuestions.slice(2, 4),
-      loadTopics: dataFile.loadTopics,
-      loadQuestionTypes: dataFile.loadQuestionTypes,
+      loadQuestions: [],
+      loadTopics: [],
+      loadQuestionTypes: [],
       questionVersions: [],
       isEdit: false
     };

@@ -2,14 +2,6 @@ import React, { Component } from "react";
 import { InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
 
 export class AnswerComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.formControl = "form-control";
-
-    if (props.touched && !props.valid) {
-      this.formControl = "form-control control-error";
-    }
-  }
   render() {
     return (
       <InputGroup>

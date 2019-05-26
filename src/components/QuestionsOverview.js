@@ -117,7 +117,7 @@ class QuestionsOverview extends Component {
   toggle = index => e => {
     let updatedTopicCollapse = this.state.topicCollapse;
     updatedTopicCollapse[index] = !updatedTopicCollapse[index];
-    this.setState(state => ({ topicCollapse: updatedTopicCollapse }));
+    this.setState({ topicCollapse: updatedTopicCollapse });
   };
   getQuestionGroups = () => {
     fetch("/api/questionGroups").then(response => {
@@ -165,6 +165,7 @@ class QuestionsOverview extends Component {
               <li key={topic.id}>
                 <TopicPreview
                   {...topic}
+                  isTeacher={false}
                   toggle={this.toggle(index)}
                   collapse={this.state.topicCollapse[index]}
                 />
