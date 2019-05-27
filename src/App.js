@@ -15,14 +15,16 @@ class App extends Component {
     super(props);
 
     this.toggleUserType = () => {
-      this.setState(state => ({
-        userType:
-          state.userType === userTypes.student
-            ? userTypes.teacher
-            : userTypes.student
-      }));
+      localStorage.setItem(
+        "userType",
+        localStorage.getItem("userType") === userTypes.student
+          ? userTypes.teacher
+          : userTypes.student
+      );
+      this.setState({
+        userType: localStorage.getItem("userType")
+      });
     };
-    localStorage.setItem("userType", userTypes.student);
     this.state = {
       userType: localStorage.getItem("userType"),
       toggleUserType: this.toggleUserType
@@ -30,7 +32,6 @@ class App extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.userType !== prevState.userType) {
-      // Whatever storage mechanism you end up deciding to use.
       localStorage.setItem("userType", this.state.userType);
     }
   }

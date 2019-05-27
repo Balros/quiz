@@ -127,7 +127,6 @@ function TopicPreview({
 class QuestionsOverview extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.userType);
     this.state = {
       topics: [],
       topicCollapse: []
@@ -139,7 +138,6 @@ class QuestionsOverview extends Component {
     this.setState({ topicCollapse: updatedTopicCollapse });
   };
   getQuestionGroups = () => {
-    console.log(this.props.userType);
     fetch("/api/questionGroups/", {
       method: "POST",
       headers: {
@@ -172,23 +170,6 @@ class QuestionsOverview extends Component {
     if (prevProps.userType !== this.props.userType) this.getQuestionGroups();
   }
   render() {
-    // return (
-    //   <ul>
-    //     {this.state.topics.map(question => {
-    //       return (
-    //         <li key={question.id}>
-    //           <div>
-    //             <p>
-    //               <Link to={"/editQuestion/" + question.id}>
-    //                 {"Otazka name: " + question.label}
-    //               </Link>
-    //             </p>
-    //           </div>
-    //         </li>
-    //       );
-    //     })}
-    //   </ul>
-    // );
     return (
       <React.Fragment>
         {this.props.userType === userTypes.teacher ? (
