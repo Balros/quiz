@@ -10,21 +10,17 @@ class EditQuestion extends Component {
   //for good UX we can preload last question but maybe it's not necessary
   constructor(props) {
     super(props);
-    // const questionGroupId = this.props.match.params.id;
-    //TODO load by questionGroupId
     this.state = {
       loadQuestions: [],
       loadTopics: [],
       loadQuestionTypes: [],
       questionVersions: [],
-      isEdit: false
+      isEdit: false,
+      questionGroupId: this.props.match.params.id
     };
   }
   getQuestionVersions = () => {
-    //TODO zmenit na generic verziu vid. to co sme robili s pintom
-    // this.props.questionUri = "";
-    let halo = "WifqB";
-    let halo2 = "/api/getQuestionVersions/" + halo;
+    let halo2 = "/api/getQuestion/" + this.state.questionGroupId;
     fetch(halo2).then(response => {
       if (response.ok) {
         response
@@ -75,6 +71,7 @@ class EditQuestion extends Component {
               answers={question.answers}
               topic={question.topic}
               questionType={question.questionType}
+              comments={question.comments}
             />
           );
         })}

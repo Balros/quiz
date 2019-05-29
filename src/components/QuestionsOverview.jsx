@@ -45,7 +45,7 @@ function AssignmentPreview({
                   return (
                     <tr key={question.id}>
                       <td>
-                        <Link to={"/editQuestion/" + question.id}>
+                        <Link to={"/question/" + question.id}>
                           {"Question name: " + question.label}
                         </Link>
                       </td>

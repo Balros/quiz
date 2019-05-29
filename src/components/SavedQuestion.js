@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Label, FormGroup, Input } from "reactstrap";
+import {
+  Label,
+  FormGroup,
+  Input,
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
+  ListGroupItemText
+} from "reactstrap";
 import "../App.css";
 import AnswerComponent from "../AnswerComponent";
 
@@ -38,6 +46,23 @@ class SavedQuestion extends Component {
             />
           );
         })}
+        <ListGroup>
+          {this.props.comments ? (
+            this.props.comments.map(comment => {
+              return (
+                <ListGroupItem color="warning">
+                  <ListGroupItemHeading>{comment.author}</ListGroupItemHeading>
+                  <ListGroupItemText>{comment.text}</ListGroupItemText>
+                  <ListGroupItemText>{comment.date}</ListGroupItemText>
+                </ListGroupItem>
+              );
+            })
+          ) : (
+            <ListGroupItem>
+              <ListGroupItemText>No comments.</ListGroupItemText>
+            </ListGroupItem>
+          )}
+        </ListGroup>
       </div>
     );
   }

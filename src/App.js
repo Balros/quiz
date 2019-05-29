@@ -52,7 +52,7 @@ class App extends Component {
                 )}
               />
               <Route path="/newQuestion" component={NewQuestion} />
-              <Route path="/editQuestion/:id" component={EditQuestion} />
+              <Route path="/question/:id" component={EditQuestion} />
               <Route
                 path="/editQuestionAssignment/:id"
                 component={CreateQuestionAssignment}
