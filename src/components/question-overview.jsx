@@ -172,11 +172,6 @@ class QuestionsOverview extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.userType === userTypes.teacher ? (
-          <p>Is teacher.</p>
-        ) : (
-          <p>Is student.</p>
-        )}
         <ul>
           {this.state.topics.map((topic, index) => {
             return (

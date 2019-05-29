@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 import "../App.css";
-import AnswerComponent from "../AnswerComponent";
+import AnswerComponent from "../answer-component";
 
 class SavedQuestion extends Component {
   render() {

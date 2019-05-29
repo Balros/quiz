@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import NewQuestion from "./components/NewQuestion";
-import Home from "./components/Home";
-import QuestionsOverview from "./components/QuestionsOverview.jsx";
-import EditQuestion from "./components/EditQuestion";
-import Error from "./components/Error";
-import CreateQuestionAssignment from "./components/CreateQuestionAssignment";
+import NewQuestion from "./components/new-question.jsx";
+import Home from "./components/home.jsx";
+import QuestionsOverview from "./components/question-overview.jsx";
+import EditQuestion from "./components/edit-question.jsx";
+import Error from "./components/error.jsx";
+import CreateQuestionAssignment from "./components/create-question-assignment.jsx";
 import { UserTypeContext, userTypes } from "./user-type-context";
-import Header from "./components/header";
+import Header from "./components/header.jsx";
 import { Container, Row, Col } from "reactstrap";
 class App extends Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class App extends Component {
             <Header />
             <Container>
               <Row>
-                <Col sm="12" md={{ size: 8, offset: 2 }}>
+                <Col sm="12" md={{ size: 10, offset: 1 }}>
                   <Switch>
                     <Route path="/" component={Home} exact />
                     <Route

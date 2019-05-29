@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import NewQuestion from "./NewQuestion";
-import SavedQuestion from "./SavedQuestion";
+import NewQuestion from "./new-question";
+import SavedQuestion from "./saved-question";
 import { Button } from "reactstrap";
 class EditQuestion extends Component {
   //TODO this.props.match.params.id marks id questionsGroups,

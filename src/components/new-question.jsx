@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import validate from "../validate";
 import "../App.css";
-import AnswerComponent from "../AnswerComponent";
+import AnswerComponent from "../answer-component";
 import {
   Button,
   Form,
