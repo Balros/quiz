@@ -9,7 +9,9 @@ import {
   Container,
   Row,
   Col,
-  Badge
+  Badge,
+  ListGroup,
+  ListGroupItem
 } from "reactstrap";
 import { UserTypeContext, userTypes } from "../user-type-context.jsx";
 
@@ -54,30 +56,37 @@ function AssignmentPreview({
             </tr>
           </thead>
           <tbody>
-            {questions.map(question => {
-              return (
-                <tr key={question.id}>
-                  <td>
-                    <Link to={"/question/" + question.id}>
-                      {"Question name: " + question.label + " "}
-                      {isTeacher ? (
-                        new Date(question.lastSeenTeacher) <
+            <tr>
+              <td>
+                <ListGroup>
+                  {questions.map(question => {
+                    return (
+                      <ListGroupItem
+                        key={question.id}
+                        tag="a"
+                        href={"/question/" + question.id}
+                        action
+                      >
+                        {"Question name: " + question.label + " "}
+                        {isTeacher ? (
+                          new Date(question.lastSeenTeacher) <
+                          new Date(question.lastChange) ? (
+                            <Badge color="danger">Changed</Badge>
+                          ) : (
+                            <Badge color="success">Not Changed</Badge>
+                          )
+                        ) : new Date(question.lastSeenStudent) <
                         new Date(question.lastChange) ? (
                           <Badge color="danger">Changed</Badge>
                         ) : (
                           <Badge color="success">Not Changed</Badge>
-                        )
-                      ) : new Date(question.lastSeenStudent) <
-                      new Date(question.lastChange) ? (
-                        <Badge color="danger">Changed</Badge>
-                      ) : (
-                        <Badge color="success">Not Changed</Badge>
-                      )}
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
+                        )}
+                      </ListGroupItem>
+                    );
+                  })}
+                </ListGroup>
+              </td>
+            </tr>
           </tbody>
         </Table>
       </Col>
