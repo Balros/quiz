@@ -3,11 +3,6 @@ import NewQuestion from "./new-question";
 import SavedQuestion from "./saved-question";
 import { Button } from "reactstrap";
 class EditQuestion extends Component {
-  //TODO this.props.match.params.id marks id questionsGroups,
-  //then you need to look for last question from that group and load that question
-  //IDEA we don't need to load anything, we just show all previous questions from group
-  //and show blank form for new question
-  //for good UX we can preload last question but maybe it's not necessary
   constructor(props) {
     super(props);
     this.state = {
@@ -20,8 +15,7 @@ class EditQuestion extends Component {
     };
   }
   getQuestionVersions = () => {
-    let halo2 = "/api/getQuestion/" + this.state.questionGroupId;
-    fetch(halo2).then(response => {
+    fetch("/api/getQuestion/" + this.state.questionGroupId).then(response => {
       if (response.ok) {
         response
           .json()
@@ -41,12 +35,31 @@ class EditQuestion extends Component {
   componentDidMount() {
     this.getQuestionVersions();
   }
+  onSendComment = questionVersionId => {
+    console.log("posielam comment");
+    const data = {
+      comment: this.state.newComment,
+      date: new Date(),
+      token: localStorage.getItem("userType")
+    };
+    fetch("/api/addComment/" + questionVersionId, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.ok) {
+        this.getQuestionVersions();
+      }
+    });
+  };
   render() {
     let question =
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
         : null;
-
     return (
       <React.Fragment>
         <Button onClick={() => this.setState({ isEdit: !this.state.isEdit })}>
@@ -62,16 +75,18 @@ class EditQuestion extends Component {
             questionType={question.questionType}
           />
         ) : null}
-        {this.state.questionVersions.map(question => {
+        {this.state.questionVersions.map(questionVersion => {
           return (
             <SavedQuestion
-              key={question.id}
-              title={question.title}
-              text={question.text}
-              answers={question.answers}
-              topic={question.topic}
-              questionType={question.questionType}
-              comments={question.comments}
+              key={questionVersion.id}
+              id={questionVersion.id}
+              title={questionVersion.title}
+              text={questionVersion.text}
+              answers={questionVersion.answers}
+              topic={questionVersion.topic}
+              questionType={questionVersion.questionType}
+              comments={questionVersion.comments}
+              onSendComment={() => this.onSendComment(questionVersion.id)}
             />
           );
         })}

@@ -8,7 +8,8 @@ import {
   Table,
   Container,
   Row,
-  Col
+  Col,
+  Badge
 } from "reactstrap";
 import { UserTypeContext, userTypes } from "../user-type-context.jsx";
 
@@ -33,66 +34,55 @@ function AssignmentPreview({
       <div>{endTime}</div>
       <Container>
         <Row>
-          <Col>
-            <Table bordered>
-              <thead>
-                <tr>
-                  <th>Approved</th>
-                </tr>
-              </thead>
-              <tbody>
-                {questions.approved.map(question => {
-                  return (
-                    <tr key={question.id}>
-                      <td>
-                        <Link to={"/question/" + question.id}>
-                          {"Question name: " + question.label}
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Col>
-          <Col>
-            <Table bordered>
-              <thead>
-                <tr>
-                  <th>In progress</th>
-                </tr>
-              </thead>
-              <tbody>
-                {questions.notApproved.map(question => {
-                  return (
-                    <tr key={question.id}>
-                      <td>
-                        <Link to={"/editQuestion/" + question.id}>
-                          {"Question name: " + question.label}
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Col>
+          {questionsTable("Approved", questions.approved, isTeacher)}
+          {questionsTable("In progress", questions.notApproved, isTeacher)}
         </Row>
       </Container>
       <Button color="primary" tag={Link} to={"/newQuestion"}>
         Create Question
       </Button>
-      {/* <ul>
-        {questions.map(question => {
-          return (
-            <li key={question.id}>
-              <QuestionLink {...question} />
-            </li>
-          );
-        })}
-      </ul> */}
     </React.Fragment>
   );
+
+  function questionsTable(headerText, questions, isTeacher) {
+    return (
+      <Col>
+        <Table bordered>
+          <thead>
+            <tr>
+              <th>{headerText}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {questions.map(question => {
+              return (
+                <tr key={question.id}>
+                  <td>
+                    <Link to={"/question/" + question.id}>
+                      {"Question name: " + question.label + " "}
+                      {isTeacher ? (
+                        new Date(question.lastSeenTeacher) <
+                        new Date(question.lastChange) ? (
+                          <Badge color="danger">Changed</Badge>
+                        ) : (
+                          <Badge color="success">Not Changed</Badge>
+                        )
+                      ) : new Date(question.lastSeenStudent) <
+                      new Date(question.lastChange) ? (
+                        <Badge color="danger">Changed</Badge>
+                      ) : (
+                        <Badge color="success">Not Changed</Badge>
+                      )}
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </Col>
+    );
+  }
 }
 function TopicPreview({
   id,

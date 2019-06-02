@@ -9,13 +9,27 @@ import {
   ListGroupItemText,
   InputGroup,
   InputGroupAddon,
-  InputGroupText,
-  Col
+  Col,
+  Button
 } from "reactstrap";
 import "../App.css";
 import AnswerComponent from "../answer-component";
 
 class SavedQuestion extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newComment: ""
+    };
+  }
+  changeHandler = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({
+      [name]: value
+    });
+  };
+
   render() {
     return (
       <div className="question">
@@ -76,9 +90,8 @@ class SavedQuestion extends Component {
           </ListGroupItem>
           {this.props.answers.map(answer => {
             return (
-              <ListGroupItem>
+              <ListGroupItem key={answer.id}>
                 <AnswerComponent
-                  key={answer.id}
                   readOnly
                   correct={answer.correct}
                   value={answer.text}
@@ -107,9 +120,16 @@ class SavedQuestion extends Component {
             )}
             <ListGroupItem color="warning">
               <InputGroup>
-                <Input />
-                <InputGroupAddon color="warning" addonType="append">
-                  <InputGroupText>Send</InputGroupText>
+                <Input
+                  type="text"
+                  name="newComment"
+                  placeholder="Write a comment..."
+                  onChange={this.changeHandler}
+                />
+                <InputGroupAddon addonType="append">
+                  <Button color="warning" onClick={this.props.onSendComment}>
+                    Send
+                  </Button>
                 </InputGroupAddon>
               </InputGroup>
             </ListGroupItem>
