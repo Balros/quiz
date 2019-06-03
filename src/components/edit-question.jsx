@@ -6,37 +6,57 @@ class EditQuestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadQuestions: [],
-      loadTopics: [],
-      loadQuestionTypes: [],
       questionVersions: [],
       isEdit: false,
-      questionGroupId: this.props.match.params.id
+      questionGroupId: this.props.match.params.id,
+      approved: false
     };
   }
   getQuestionVersions = () => {
-    fetch("/api/getQuestion/" + this.state.questionGroupId).then(response => {
-      if (response.ok) {
-        response
-          .json()
-          .then(data => {
-            if (data) {
-              this.setState({
-                questionVersions: data
-              });
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
+    fetch("/api/getQuestionVersions/" + this.state.questionGroupId).then(
+      response => {
+        if (response.ok) {
+          response
+            .json()
+            .then(data => {
+              if (data) {
+                this.setState({
+                  questionVersions: data
+                });
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
       }
-    });
+    );
+  };
+  getQuestionInfo = () => {
+    fetch("/api/getQuestionInfo/" + this.state.questionGroupId).then(
+      response => {
+        if (response.ok) {
+          response
+            .json()
+            .then(data => {
+              if (data) {
+                this.setState({
+                  approved: data
+                });
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
+      }
+    );
   };
   componentDidMount() {
     this.getQuestionVersions();
+    this.getQuestionInfo();
   }
   onSendComment = questionVersionId => {
-    console.log("posielam comment");
     const data = {
       comment: this.state.newComment,
       date: new Date(),
@@ -87,6 +107,7 @@ class EditQuestion extends Component {
               questionType={questionVersion.questionType}
               comments={questionVersion.comments}
               onSendComment={() => this.onSendComment(questionVersion.id)}
+              approved={this.state.approved}
             />
           );
         })}
