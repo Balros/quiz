@@ -188,12 +188,7 @@ class NewQuestion extends Component {
       response
         .json()
         .then(data => {
-          let options = data.map(item => {
-            return {
-              value: item.id,
-              displayValue: item.name
-            };
-          });
+          let options = data;
           console.log(options);
           const updatedControls = {
             ...this.state.formControls
@@ -278,8 +273,8 @@ class NewQuestion extends Component {
               >
                 {this.state.formControls.topic.options.map(option => {
                   return (
-                    <option key={option.value} value={option.value}>
-                      {option.displayValue}
+                    <option key={option.id} value={option.id}>
+                      {option.name}
                     </option>
                   );
                 })}
@@ -298,8 +293,8 @@ class NewQuestion extends Component {
               >
                 {this.state.formControls.questionType.options.map(option => {
                   return (
-                    <option key={option.value} value={option.value}>
-                      {option.displayValue}
+                    <option key={option.id} value={option.id}>
+                      {option.name}
                     </option>
                   );
                 })}

@@ -93,25 +93,25 @@ function AssignmentPreview({
     );
   }
 }
-function TopicPreview({
-  id,
-  topicLabel,
-  assignment,
-  toggle,
-  collapse,
-  isTeacher
-}) {
+function TopicPreview({ id, name, assignment, toggle, collapse, isTeacher }) {
   return (
     <React.Fragment>
       <Button color="primary" onClick={toggle}>
-        {topicLabel}
+        {name}
       </Button>
       <Collapse isOpen={collapse}>
         <Card>
           <CardBody>
-            <h4>{topicLabel}</h4>
+            <h4>{name}</h4>
             {!assignment && isTeacher ? (
-              <Button color="primary" tag={Link} to={"/newQuestionAssignment"}>
+              <Button
+                color="primary"
+                tag={Link}
+                to={{
+                  pathname: "/newQuestionAssignment",
+                  state: { topic: id }
+                }}
+              >
                 Create Question Assignment
               </Button>
             ) : assignment ? (

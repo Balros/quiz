@@ -10,6 +10,7 @@ import CreateQuestionAssignment from "./components/create-question-assignment.js
 import { UserTypeContext, userTypes } from "./user-type-context";
 import Header from "./components/header.jsx";
 import { Container, Row, Col } from "reactstrap";
+import CreateTopic from "./components/create-topic.jsx";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -55,6 +56,7 @@ class App extends Component {
                       )}
                     />
                     <Route path="/newQuestion" component={NewQuestion} />
+                    <Route path="/createTopic" component={CreateTopic} />
                     <Route path="/question/:id" component={EditQuestion} />
                     <Route
                       path="/editQuestionAssignment/:id"

@@ -46,8 +46,7 @@ export class CreateQuestionAssignment extends Component {
     let selectFind = false;
     let nextAgent = this.state.agent;
     currentAllAgents.map(agent => {
-      if (agent.value === this.state.agent) {
-        console.log(currentSelectedAgents);
+      if (agent.id === this.state.agent) {
         currentSelectedAgents.push(this.state.agent);
         selectFind = !selectFind;
       }
@@ -55,9 +54,9 @@ export class CreateQuestionAssignment extends Component {
     let isEmpty = true;
     if (selectFind) {
       currentAllAgents.map(agent => {
-        if (currentSelectedAgents.indexOf(agent.value) === -1) {
+        if (currentSelectedAgents.indexOf(agent.id) === -1) {
           isEmpty = false;
-          nextAgent = agent.value;
+          nextAgent = agent.id;
         }
       });
     }
@@ -98,32 +97,32 @@ export class CreateQuestionAssignment extends Component {
   };
   getTopics = () => {
     fetch("/api/topics").then(response => {
-      this.populateSelect(response, "allTopics", "topic");
+      this.populateSelect(
+        response,
+        "allTopics",
+        "topic",
+        this.props.location.state.topic
+      );
     });
   };
   getAgents = () => {
     fetch("/api/getAgents").then(response => {
-      this.populateSelect(response, "allAgents", "agent");
+      this.populateSelect(response, "allAgents", "agent", null);
     });
   };
-  populateSelect(response, selectElement, selected) {
+  populateSelect(response, selectElement, elementStateName, selected) {
     if (response.ok) {
       response
         .json()
         .then(data => {
-          let tmpSelected = "";
-          let options = data.map(item => {
-            if (tmpSelected === "") {
-              tmpSelected = item.id;
-            }
-            return {
-              value: item.id,
-              displayValue: item.name
-            };
-          });
+          let selectedTmp = selected
+            ? selected
+            : data.length >= 1
+              ? data[0].id
+              : "";
           this.setState({
-            [selectElement]: options,
-            [selected]: tmpSelected
+            [selectElement]: data,
+            [elementStateName]: selectedTmp
           });
         })
         .catch(error => {
@@ -201,8 +200,8 @@ export class CreateQuestionAssignment extends Component {
             >
               {this.state.allTopics.map(topic => {
                 return (
-                  <option key={topic.value} value={topic.value}>
-                    {topic.displayValue}
+                  <option key={topic.id} value={topic.id}>
+                    {topic.name}
                   </option>
                 );
               })}
@@ -229,10 +228,9 @@ export class CreateQuestionAssignment extends Component {
                 onChange={this.handleChange}
               >
                 {this.state.allAgents.map(agent => {
-                  return this.state.selectedAgents.indexOf(agent.value) ===
-                    -1 ? (
-                    <option key={agent.value} value={agent.value}>
-                      {agent.displayValue}
+                  return this.state.selectedAgents.indexOf(agent.id) === -1 ? (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.name}
                     </option>
                   ) : null;
                 })}
@@ -255,14 +253,13 @@ export class CreateQuestionAssignment extends Component {
               </thead>
               <tbody>
                 {this.state.allAgents.map(agent => {
-                  return this.state.selectedAgents.indexOf(agent.value) !==
-                    -1 ? (
-                    <tr key={agent.value}>
-                      <td>{agent.displayValue}</td>
+                  return this.state.selectedAgents.indexOf(agent.id) !== -1 ? (
+                    <tr key={agent.id}>
+                      <td>{agent.name}</td>
                       <td>
                         <Button
                           color="danger"
-                          onClick={() => this.deleteAgent(agent.value)}
+                          onClick={() => this.deleteAgent(agent.id)}
                         >
                           X
                         </Button>
