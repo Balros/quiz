@@ -23,6 +23,16 @@ function AssignmentPreview({
   questions,
   isTeacher
 }) {
+  let questionsApproved = [];
+  let questionsNotApproved = [];
+  console.log(questions);
+  if (questions) {
+    questions.forEach(question => {
+      question.approved
+        ? questionsApproved.push(question)
+        : questionsNotApproved.push(question);
+    });
+  }
   return (
     <React.Fragment>
       <h5>Assignment</h5>
@@ -36,8 +46,12 @@ function AssignmentPreview({
       <div>{endTime}</div>
       <Container>
         <Row>
-          {questionsTable("Approved", questions.approved, isTeacher)}
-          {questionsTable("In progress", questions.notApproved, isTeacher)}
+          {questionsApproved
+            ? questionsTable("Approved", questionsApproved, isTeacher)
+            : null}
+          {questionsNotApproved
+            ? questionsTable("In progress", questionsNotApproved, isTeacher)
+            : null}
         </Row>
       </Container>
       <Button color="primary" tag={Link} to={"/newQuestion"}>
@@ -59,31 +73,33 @@ function AssignmentPreview({
             <tr>
               <td>
                 <ListGroup>
-                  {questions.map(question => {
-                    return (
-                      <ListGroupItem
-                        key={question.id}
-                        tag="a"
-                        href={"/question/" + question.id}
-                        action
-                      >
-                        {"Question name: " + question.label + " "}
-                        {isTeacher ? (
-                          new Date(question.lastSeenTeacher) <
-                          new Date(question.lastChange) ? (
-                            <Badge color="danger">Changed</Badge>
-                          ) : (
-                            <Badge color="success">Not Changed</Badge>
-                          )
-                        ) : new Date(question.lastSeenStudent) <
-                        new Date(question.lastChange) ? (
-                          <Badge color="danger">Changed</Badge>
-                        ) : (
-                          <Badge color="success">Not Changed</Badge>
-                        )}
-                      </ListGroupItem>
-                    );
-                  })}
+                  {questions
+                    ? questions.map(question => {
+                        return (
+                          <ListGroupItem
+                            key={question.id}
+                            tag="a"
+                            href={"/question/" + question.id}
+                            action
+                          >
+                            {"Question name: " + question.label + " "}
+                            {isTeacher ? (
+                              new Date(question.lastSeenTeacher) <
+                              new Date(question.lastChange) ? (
+                                <Badge color="danger">Changed</Badge>
+                              ) : (
+                                <Badge color="success">Not Changed</Badge>
+                              )
+                            ) : new Date(question.lastSeenStudent) <
+                            new Date(question.lastChange) ? (
+                              <Badge color="danger">Changed</Badge>
+                            ) : (
+                              <Badge color="success">Not Changed</Badge>
+                            )}
+                          </ListGroupItem>
+                        );
+                      })
+                    : null}
                 </ListGroup>
               </td>
             </tr>
@@ -93,7 +109,15 @@ function AssignmentPreview({
     );
   }
 }
-function TopicPreview({ id, name, assignment, toggle, collapse, isTeacher }) {
+function TopicPreview({
+  id,
+  name,
+  assignment,
+  questions,
+  toggle,
+  collapse,
+  isTeacher
+}) {
   return (
     <React.Fragment>
       <Button color="primary" onClick={toggle}>
@@ -115,7 +139,11 @@ function TopicPreview({ id, name, assignment, toggle, collapse, isTeacher }) {
                 Create Question Assignment
               </Button>
             ) : assignment ? (
-              <AssignmentPreview {...assignment} isTeacher={isTeacher} />
+              <AssignmentPreview
+                {...assignment}
+                questions={questions}
+                isTeacher={isTeacher}
+              />
             ) : null}
           </CardBody>
         </Card>

@@ -19,8 +19,6 @@ import {
 import "../App.css";
 import AnswerComponent from "../answer-component";
 
-let publicApprove = 0;
-let privateApprove = 1;
 class SavedQuestion extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +41,7 @@ class SavedQuestion extends Component {
     });
   };
 
-  onApprove = approveNumber => {
+  onApprove = isPrivate => {
     fetch("/api/approveQuestionVersion", {
       method: "POST",
       headers: {
@@ -52,7 +50,8 @@ class SavedQuestion extends Component {
       },
       body: JSON.stringify({
         token: this.props.userType,
-        approveNumber: approveNumber
+        questionVersionUri: this.props.id,
+        isPrivate: isPrivate
       })
     }).then(response => {
       if (response.ok) {
@@ -176,10 +175,10 @@ class SavedQuestion extends Component {
                   Approve as
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem onClick={this.onApprove(publicApprove)}>
+                  <DropdownItem onClick={() => this.onApprove(false)}>
                     Approve as public
                   </DropdownItem>
-                  <DropdownItem onClick={this.onApprove(privateApprove)}>
+                  <DropdownItem onClick={() => this.onApprove(true)}>
                     Approve as private
                   </DropdownItem>
                 </DropdownMenu>

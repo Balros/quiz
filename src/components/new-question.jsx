@@ -15,7 +15,6 @@ import {
 class NewQuestion extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     let untouchedCss = "form-control";
     let touchedCss = "form-control control-error";
     let tmpFormControls = {
@@ -103,7 +102,7 @@ class NewQuestion extends Component {
       questionType: this.state.formControls["questionType"].value,
       answers: answers
     };
-    fetch("/createNewQuestion", {
+    fetch("/api/createNewQuestion", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -184,12 +183,12 @@ class NewQuestion extends Component {
   };
 
   populateSelect(response, selectElement, propValue) {
+    // console.log(propValue);
     if (response.ok) {
       response
         .json()
         .then(data => {
           let options = data;
-          console.log(options);
           const updatedControls = {
             ...this.state.formControls
           };
@@ -197,7 +196,11 @@ class NewQuestion extends Component {
             ...updatedControls[selectElement]
           };
           updatedFormElement.options = options;
-          updatedFormElement.value = propValue;
+          updatedFormElement.value = propValue
+            ? propValue
+            : options && options.length
+              ? options[0].id
+              : undefined;
           updatedControls[selectElement] = updatedFormElement;
           this.setState({
             formControls: updatedControls
@@ -242,7 +245,6 @@ class NewQuestion extends Component {
   }
 
   render() {
-    console.log(this.state.formControls);
     return (
       <Form>
         <Card>

@@ -69,7 +69,7 @@ export class CreateQuestionAssignment extends Component {
       selectedAgents: currentSelectedAgents
     });
   };
-  getQuestionAssignment = uri => {
+  getQuestionAssignment = () => {
     fetch("/api/getQuestionAssignment/" + this.props.match.params.id).then(
       response => {
         if (response.ok) {
@@ -80,8 +80,8 @@ export class CreateQuestionAssignment extends Component {
                 let item = data[0];
 
                 this.setState({
-                  startDate: new Date(),
-                  endDate: new Date(),
+                  startDate: item.startDate,
+                  endDate: item.endDate,
                   description: item.description,
                   topic: item.topic,
                   selectedAgents: item.selectedAgents
@@ -156,12 +156,52 @@ export class CreateQuestionAssignment extends Component {
       selectedAgents: this.state.selectedAgents
     };
     console.log(data);
+    fetch("/api/createQuestionAssignment", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.ok) {
+        this.props.history.push("/questionGroups");
+      }
+    });
   };
+  // formSubmitHandler = () => {
+  //   let answers = this.state.answers.map(answer => {
+  //     return {
+  //       text: this.state.formControls[answer["answerInputName"]].value,
+  //       correct: this.state.formControls[answer["answerCheckboxName"]].value
+  //     };
+  //   });
+  //   let data = {
+  //     author: "Adam",
+  //     questionVersion: this.props.questionGroup,
+  //     question: this.state.formControls["question"].value,
+  //     topic: this.state.formControls["topic"].value,
+  //     questionType: this.state.formControls["questionType"].value,
+  //     answers: answers
+  //   };
+  //   fetch("/api/createNewQuestion", {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(data)
+  //   }).then(response => {
+  //     if (response.ok) {
+  //       this.props.history.push("/questionGroups");
+  //     }
+  //   });
+  // };
   componentDidMount() {
     this.getTopics();
     this.getAgents();
     if (this.props.match.params.id) {
-      this.getQuestionAssignment(this.props.match.params.id);
+      this.getQuestionAssignment();
     }
   }
   render() {
