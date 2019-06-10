@@ -22,7 +22,8 @@ export class CreateQuestionAssignment extends Component {
       topic: "",
       agent: "",
       description: "",
-      selectedAgents: []
+      selectedAgents: [],
+      dataOld: []
     };
   }
 
@@ -34,7 +35,7 @@ export class CreateQuestionAssignment extends Component {
       currentSelectedAgents.splice(index, 1);
       deletedAgentUri = selectedAgentUri;
     }
-
+    console.log(this.state.dataOld);
     this.setState({
       selectedAgents: currentSelectedAgents,
       agent: deletedAgentUri
@@ -63,6 +64,7 @@ export class CreateQuestionAssignment extends Component {
     if (isEmpty) {
       nextAgent = "";
     }
+    console.log(this.state.dataOld);
     this.setState({
       allAgents: currentAllAgents,
       agent: nextAgent,
@@ -70,30 +72,45 @@ export class CreateQuestionAssignment extends Component {
     });
   };
   getQuestionAssignment = () => {
-    fetch("/api/getQuestionAssignment/" + this.props.match.params.id).then(
-      response => {
-        if (response.ok) {
-          response
-            .json()
-            .then(data => {
-              if (data && data.length && data.length > 0) {
-                let item = data[0];
-
-                this.setState({
-                  startDate: item.startDate,
-                  endDate: item.endDate,
-                  description: item.description,
-                  topic: item.topic,
-                  selectedAgents: item.selectedAgents
-                });
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
+    fetch(
+      "/api/getQuestionAssignment/" +
+        encodeURIComponent(this.props.match.params.id)
+    ).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data && data.length && data.length > 0) {
+              const item = data[0];
+              console.log(item.selectedAgents);
+              if (!Array.isArray(item.selectedAgents))
+                item.selectedAgents = item.selectedAgents
+                  ? [item.selectedAgents]
+                  : [];
+              console.log(item.selectedAgents);
+              const selectedAgentsTmp = item.selectedAgents.map(
+                selectedAgent => {
+                  return selectedAgent.id;
+                }
+              );
+              item.selectedAgents = Array.from(selectedAgentsTmp);
+              console.log(selectedAgentsTmp);
+              console.log(item);
+              this.setState({
+                startDate: new Date(item.startDate),
+                endDate: new Date(item.endDate),
+                description: item.description,
+                topic: item.topic,
+                selectedAgents: selectedAgentsTmp,
+                dataOld: item
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
-    );
+    });
   };
   getTopics = () => {
     fetch("/api/topics").then(response => {
@@ -101,7 +118,9 @@ export class CreateQuestionAssignment extends Component {
         response,
         "allTopics",
         "topic",
-        this.props.location.state.topic
+        this.props.location.state && this.props.location.state.topic
+          ? this.props.location.state.topic
+          : null
       );
     });
   };
@@ -155,8 +174,15 @@ export class CreateQuestionAssignment extends Component {
       topic: this.state.topic,
       selectedAgents: this.state.selectedAgents
     };
+    let fetchAddress = "/api/createQuestionAssignment";
+    if (this.isEdit()) {
+      data["id"] = this.props.match.params.id;
+      data["dataOld"] = this.state.dataOld;
+
+      fetchAddress = "/api/editQuestionAssignment";
+    }
     console.log(data);
-    fetch("/api/createQuestionAssignment", {
+    fetch(fetchAddress, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -168,6 +194,9 @@ export class CreateQuestionAssignment extends Component {
         this.props.history.push("/questionGroups");
       }
     });
+  };
+  isEdit = () => {
+    return this.props.match.params.id ? true : false;
   };
   // formSubmitHandler = () => {
   //   let answers = this.state.answers.map(answer => {
@@ -200,7 +229,7 @@ export class CreateQuestionAssignment extends Component {
   componentDidMount() {
     this.getTopics();
     this.getAgents();
-    if (this.props.match.params.id) {
+    if (this.isEdit()) {
       this.getQuestionAssignment();
     }
   }
@@ -310,7 +339,7 @@ export class CreateQuestionAssignment extends Component {
               </tbody>
             </Table>
           </FormGroup>
-          <Button color="success" onClick={this.formSubmit}>
+          <Button color="success" onClick={() => this.formSubmit()}>
             Create assignment
           </Button>
         </Form>

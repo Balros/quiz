@@ -25,7 +25,6 @@ function AssignmentPreview({
 }) {
   let questionsApproved = [];
   let questionsNotApproved = [];
-  console.log(questions);
   if (questions) {
     questions.forEach(question => {
       question.approved
@@ -37,7 +36,11 @@ function AssignmentPreview({
     <React.Fragment>
       <h5>Assignment</h5>
       {isTeacher ? (
-        <Button color="primary" tag={Link} to={"/editQuestionAssignment/" + id}>
+        <Button
+          color="primary"
+          tag={Link}
+          to={"/editQuestionAssignment/" + encodeURIComponent(id)}
+        >
           Edit Question Assignment
         </Button>
       ) : null}
