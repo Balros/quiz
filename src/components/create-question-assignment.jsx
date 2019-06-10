@@ -35,7 +35,6 @@ export class CreateQuestionAssignment extends Component {
       currentSelectedAgents.splice(index, 1);
       deletedAgentUri = selectedAgentUri;
     }
-    console.log(this.state.dataOld);
     this.setState({
       selectedAgents: currentSelectedAgents,
       agent: deletedAgentUri
@@ -64,7 +63,6 @@ export class CreateQuestionAssignment extends Component {
     if (isEmpty) {
       nextAgent = "";
     }
-    console.log(this.state.dataOld);
     this.setState({
       allAgents: currentAllAgents,
       agent: nextAgent,
@@ -82,20 +80,16 @@ export class CreateQuestionAssignment extends Component {
           .then(data => {
             if (data && data.length && data.length > 0) {
               const item = data[0];
-              console.log(item.selectedAgents);
               if (!Array.isArray(item.selectedAgents))
                 item.selectedAgents = item.selectedAgents
                   ? [item.selectedAgents]
                   : [];
-              console.log(item.selectedAgents);
               const selectedAgentsTmp = item.selectedAgents.map(
                 selectedAgent => {
                   return selectedAgent.id;
                 }
               );
               item.selectedAgents = Array.from(selectedAgentsTmp);
-              console.log(selectedAgentsTmp);
-              console.log(item);
               this.setState({
                 startDate: new Date(item.startDate),
                 endDate: new Date(item.endDate),
@@ -181,7 +175,6 @@ export class CreateQuestionAssignment extends Component {
 
       fetchAddress = "/api/editQuestionAssignment";
     }
-    console.log(data);
     fetch(fetchAddress, {
       method: "POST",
       headers: {
@@ -198,34 +191,6 @@ export class CreateQuestionAssignment extends Component {
   isEdit = () => {
     return this.props.match.params.id ? true : false;
   };
-  // formSubmitHandler = () => {
-  //   let answers = this.state.answers.map(answer => {
-  //     return {
-  //       text: this.state.formControls[answer["answerInputName"]].value,
-  //       correct: this.state.formControls[answer["answerCheckboxName"]].value
-  //     };
-  //   });
-  //   let data = {
-  //     author: "Adam",
-  //     questionVersion: this.props.questionGroup,
-  //     question: this.state.formControls["question"].value,
-  //     topic: this.state.formControls["topic"].value,
-  //     questionType: this.state.formControls["questionType"].value,
-  //     answers: answers
-  //   };
-  //   fetch("/api/createNewQuestion", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   }).then(response => {
-  //     if (response.ok) {
-  //       this.props.history.push("/questionGroups");
-  //     }
-  //   });
-  // };
   componentDidMount() {
     this.getTopics();
     this.getAgents();
