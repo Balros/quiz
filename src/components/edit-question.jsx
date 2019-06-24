@@ -8,20 +8,81 @@ class EditQuestion extends Component {
     this.state = {
       questionVersions: [],
       isEdit: false,
-      questionGroupId: this.props.match.params.id,
-      approved: false
+      questionId: this.props.match.params.id,
+      approved: false,
+      allTopics: {},
+      allQuestionTypes: {},
+      title: "",
+      lastSeenByStudent: "",
+      lastSeenByTeacher: "",
+      lastChange: ""
     };
   }
+
+  getAllQuestionTypes = () => {
+    fetch("/api/questionTypes").then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data && data.length && data.length > 0) {
+              const item = data;
+              let questionTypeMap = new Map();
+              item.forEach(questionType => {
+                questionTypeMap.set(questionType.id, questionType.name);
+              });
+              this.setState({
+                allQuestionTypes: questionTypeMap
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
+  getAllTopics = () => {
+    fetch("/api/topics").then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data && data.length && data.length > 0) {
+              const item = data;
+              let topicsMap = new Map();
+              item.forEach(topic => {
+                topicsMap.set(topic.id, topic.name);
+              });
+              this.setState({
+                allTopics: topicsMap
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
   getQuestionVersions = () => {
-    fetch("/api/getQuestionVersions/" + this.state.questionGroupId).then(
+    fetch("/api/getQuestionVersions/" + this.state.questionId).then(
       response => {
         if (response.ok) {
           response
             .json()
             .then(data => {
-              if (data) {
+              if (data && data.length && data.length > 0) {
+                const item = data[0];
                 this.setState({
-                  questionVersions: data
+                  title: item.title,
+                  selectedTopic: item.topic,
+                  lastSeenByStudent: item.lastSeenByStudent,
+                  lastSeenByTeacher: item.lastSeenByTeacher,
+                  lastChange: item.lastChange,
+                  questionVersions: item.questionVersions
                 });
               }
             })
@@ -32,37 +93,40 @@ class EditQuestion extends Component {
       }
     );
   };
+
   getQuestionInfo = () => {
-    fetch("/api/getQuestionInfo/" + this.state.questionGroupId).then(
-      response => {
-        if (response.ok) {
-          response
-            .json()
-            .then(data => {
-              if (data) {
-                this.setState({
-                  approved: data
-                });
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
+    fetch("/api/getQuestionInfo/" + this.state.questionId).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data) {
+              this.setState({
+                approved: data
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
-    );
+    });
   };
+
   componentDidMount() {
+    this.getAllQuestionTypes();
+    this.getAllTopics();
     this.getQuestionVersions();
     this.getQuestionInfo();
   }
-  onSendComment = questionVersionId => {
+  onSendComment = (questionVersionId, newComment, oldData) => {
     const data = {
-      comment: this.state.newComment,
-      date: new Date(),
-      token: localStorage.getItem("userType")
+      questionVersionId: questionVersionId,
+      newComment: newComment,
+      token: localStorage.getItem("userType"),
+      oldData: oldData
     };
-    fetch("/api/addComment/" + questionVersionId, {
+    fetch("/api/addComment", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -76,23 +140,33 @@ class EditQuestion extends Component {
     });
   };
   render() {
-    let question =
+    // console.log(this.state.allTopics);
+    console.log(this.state.questionVersions);
+    let lastKnownQuestionVersion =
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
         : null;
+    let oldDataaa = {
+      lastSeenByStudent: this.state.lastSeenByStudent,
+      lastSeenByTeacher: this.state.lastSeenByTeacher,
+      lastChange: this.state.lastChange,
+      questionId: this.state.questionId
+    };
     return (
       <React.Fragment>
         <Button onClick={() => this.setState({ isEdit: !this.state.isEdit })}>
           Edit question
         </Button>
-        {this.state.isEdit && question ? (
+        {this.state.isEdit && lastKnownQuestionVersion ? (
           <NewQuestion
-            questionGroup={this.props.match.params.id}
-            title={question.title}
-            text={question.text}
-            answers={question.answers}
-            topic={question.topic}
-            questionType={question.questionType}
+            questionId={this.props.match.params.id}
+            title={this.state.title}
+            text={lastKnownQuestionVersion.text.value}
+            answers={lastKnownQuestionVersion.answers}
+            topic={this.state.selectedTopic}
+            questionType={lastKnownQuestionVersion.questionType}
+            history={this.props.history}
+            oldData={oldDataaa}
           />
         ) : null}
         {this.state.questionVersions.map(questionVersion => {
@@ -100,14 +174,17 @@ class EditQuestion extends Component {
             <SavedQuestion
               key={questionVersion.id}
               id={questionVersion.id}
-              title={questionVersion.title}
+              title={this.state.title}
               text={questionVersion.text}
               answers={questionVersion.answers}
-              topic={questionVersion.topic}
-              questionType={questionVersion.questionType}
+              topic={this.state.allTopics.get(this.state.selectedTopic)}
+              questionType={this.state.allQuestionTypes.get(
+                questionVersion.questionType
+              )}
               comments={questionVersion.comments}
-              onSendComment={() => this.onSendComment(questionVersion.id)}
+              onSendComment={this.onSendComment}
               approved={this.state.approved}
+              oldData={oldDataaa}
             />
           );
         })}

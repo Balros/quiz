@@ -1,7 +1,7 @@
 import React from "react";
 export const userTypes = {
-  teacher: "teacher",
-  student: "student"
+  teacher: "http://www.semanticweb.org/semanticweb#Teacher",
+  student: "http://www.semanticweb.org/semanticweb#Adam"
 };
 Object.freeze(userTypes);
 

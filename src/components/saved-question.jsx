@@ -94,7 +94,7 @@ class SavedQuestion extends Component {
                   type="text"
                   name="question"
                   disabled
-                  value={this.props.text}
+                  value={this.props.text.value}
                 />
               </Col>
             </FormGroup>
@@ -129,7 +129,7 @@ class SavedQuestion extends Component {
                 <AnswerComponent
                   readOnly
                   correct={answer.correct}
-                  value={answer.text}
+                  value={answer.text.value}
                   disabled={true}
                 />
               </ListGroupItem>
@@ -139,7 +139,9 @@ class SavedQuestion extends Component {
             this.props.comments.map(comment => {
               return (
                 <ListGroupItem key={comment.id} color="warning">
-                  <ListGroupItemHeading>{comment.author}</ListGroupItemHeading>
+                  <ListGroupItemHeading>
+                    {comment.author.name}
+                  </ListGroupItemHeading>
                   <ListGroupItemText>{comment.text}</ListGroupItemText>
                   <ListGroupItemText>{comment.date}</ListGroupItemText>
                 </ListGroupItem>
@@ -159,7 +161,16 @@ class SavedQuestion extends Component {
                 onChange={this.changeHandler}
               />
               <InputGroupAddon addonType="append">
-                <Button color="warning" onClick={this.props.onSendComment}>
+                <Button
+                  color="warning"
+                  onClick={() =>
+                    this.props.onSendComment(
+                      this.props.id,
+                      this.state.newComment,
+                      this.props.oldData
+                    )
+                  }
+                >
                   Send
                 </Button>
               </InputGroupAddon>

@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -13,7 +13,7 @@ import {
   ListGroup,
   ListGroupItem
 } from "reactstrap";
-import { UserTypeContext, userTypes } from "../user-type-context.jsx";
+import { UserTypeContext } from "../user-type-context.jsx";
 
 function AssignmentPreview({
   id,
@@ -21,7 +21,8 @@ function AssignmentPreview({
   startTime,
   endTime,
   questions,
-  isTeacher
+  isTeacher,
+  topic
 }) {
   let questionsApproved = [];
   let questionsNotApproved = [];
@@ -57,7 +58,11 @@ function AssignmentPreview({
             : null}
         </Row>
       </Container>
-      <Button color="primary" tag={Link} to={"/newQuestion"}>
+      <Button
+        color="primary"
+        tag={Link}
+        to={"/newQuestion/" + encodeURIComponent(topic)}
+      >
         Create Question
       </Button>
     </React.Fragment>
@@ -82,18 +87,20 @@ function AssignmentPreview({
                           <ListGroupItem
                             key={question.id}
                             tag="a"
-                            href={"/question/" + question.id}
+                            href={
+                              "/question/" + encodeURIComponent(question.id)
+                            }
                             action
                           >
-                            {"Question name: " + question.label + " "}
+                            {"Question name: " + question.title + " "}
                             {isTeacher ? (
-                              new Date(question.lastSeenTeacher) <
+                              new Date(question.lastSeenByTeacher) <
                               new Date(question.lastChange) ? (
                                 <Badge color="danger">Changed</Badge>
                               ) : (
                                 <Badge color="success">Not Changed</Badge>
                               )
-                            ) : new Date(question.lastSeenStudent) <
+                            ) : new Date(question.lastSeenByStudent) <
                             new Date(question.lastChange) ? (
                               <Badge color="danger">Changed</Badge>
                             ) : (
@@ -146,6 +153,7 @@ function TopicPreview({
                 {...assignment}
                 questions={questions}
                 isTeacher={isTeacher}
+                topic={id}
               />
             ) : null}
           </CardBody>
@@ -175,7 +183,7 @@ class QuestionsOverview extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        token: this.props.userType
+        token: this.context.userType
       })
     }).then(response => {
       if (response.ok) {
@@ -208,7 +216,12 @@ class QuestionsOverview extends Component {
               <li key={topic.id}>
                 <TopicPreview
                   {...topic}
-                  isTeacher={this.props.userType === "teacher" ? true : false}
+                  isTeacher={
+                    this.context.userType ===
+                    "http://www.semanticweb.org/semanticweb#Teacher"
+                      ? true
+                      : false
+                  }
                   toggle={this.toggle(index)}
                   collapse={this.state.topicCollapse[index]}
                 />

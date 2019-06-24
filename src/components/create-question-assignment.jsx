@@ -45,7 +45,7 @@ export class CreateQuestionAssignment extends Component {
     const currentSelectedAgents = this.state.selectedAgents;
     let selectFind = false;
     let nextAgent = this.state.agent;
-    currentAllAgents.map(agent => {
+    currentAllAgents.forEach(agent => {
       if (agent.id === this.state.agent) {
         currentSelectedAgents.push(this.state.agent);
         selectFind = !selectFind;
@@ -53,7 +53,7 @@ export class CreateQuestionAssignment extends Component {
     });
     let isEmpty = true;
     if (selectFind) {
-      currentAllAgents.map(agent => {
+      currentAllAgents.forEach(agent => {
         if (currentSelectedAgents.indexOf(agent.id) === -1) {
           isEmpty = false;
           nextAgent = agent.id;
@@ -80,10 +80,6 @@ export class CreateQuestionAssignment extends Component {
           .then(data => {
             if (data && data.length && data.length > 0) {
               const item = data[0];
-              if (!Array.isArray(item.selectedAgents))
-                item.selectedAgents = item.selectedAgents
-                  ? [item.selectedAgents]
-                  : [];
               const selectedAgentsTmp = item.selectedAgents.map(
                 selectedAgent => {
                   return selectedAgent.id;

@@ -49,13 +49,11 @@ class App extends Component {
                     <Route path="/" component={Home} exact />
                     <Route
                       path="/questionGroups"
-                      render={() => (
-                        <QuestionsOverview
-                          userType={localStorage.getItem("userType")}
-                        />
-                      )}
+                      component={QuestionsOverview}
                     />
-                    <Route path="/newQuestion" component={NewQuestion} />
+                    />
+                    <Route path="/newQuestion/:id" component={NewQuestion} />
+                    <Route path="/newQuestion" component={NewQuestion} exact />
                     <Route path="/createTopic" component={CreateTopic} />
                     <Route path="/question/:id" component={EditQuestion} />
                     <Route

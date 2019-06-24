@@ -11,6 +11,7 @@ import {
   FormGroup,
   Input
 } from "reactstrap";
+import { UserTypeContext } from "../user-type-context";
 
 class NewQuestion extends Component {
   constructor(props) {
@@ -95,13 +96,16 @@ class NewQuestion extends Component {
       };
     });
     let data = {
-      author: "Adam",
-      questionVersion: this.props.questionGroup,
-      question: this.state.formControls["question"].value,
+      token: this.context.userType,
+      questionId: this.props.questionId,
+      questionText: this.state.formControls["question"].value,
       topic: this.state.formControls["topic"].value,
       questionType: this.state.formControls["questionType"].value,
       answers: answers
     };
+    if (this.props.oldData) {
+      data.oldData = this.props.oldData;
+    }
     fetch("/api/createNewQuestion", {
       method: "POST",
       headers: {
@@ -172,7 +176,15 @@ class NewQuestion extends Component {
 
   getTopics = () => {
     fetch("/api/topics").then(response => {
-      this.populateSelect(response, "topic", this.props.topic);
+      this.populateSelect(
+        response,
+        "topic",
+        this.props.topic
+          ? this.props.topic
+          : this.props.match.params.id
+            ? decodeURIComponent(this.props.match.params.id)
+            : null
+      );
     });
   };
 
@@ -183,7 +195,6 @@ class NewQuestion extends Component {
   };
 
   populateSelect(response, selectElement, propValue) {
-    // console.log(propValue);
     if (response.ok) {
       response
         .json()
@@ -213,11 +224,11 @@ class NewQuestion extends Component {
   }
   addExistingAnswers(answers) {
     let tmpAnswer = {};
-    answers.map((answer, index) => {
+    answers.forEach((answer, index) => {
       tmpAnswer = {
         id: index,
-        answer_text: answer.text,
-        correct: answer.correct
+        answer_text: answer.text.value,
+        correct: answer.correct.value
       };
       let updatedControls = this.state.formControls;
       let updatedAnswers = this.state.answers;
@@ -241,7 +252,7 @@ class NewQuestion extends Component {
   componentDidMount() {
     this.getTopics();
     this.getQuestionTypes();
-    if (this.props.questionGroup) this.addExistingAnswers(this.props.answers);
+    if (this.props.questionId) this.addExistingAnswers(this.props.answers);
   }
 
   render() {
@@ -332,5 +343,5 @@ class NewQuestion extends Component {
     );
   }
 }
-
+NewQuestion.contextType = UserTypeContext;
 export default NewQuestion;
