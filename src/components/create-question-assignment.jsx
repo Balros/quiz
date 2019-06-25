@@ -104,7 +104,16 @@ export class CreateQuestionAssignment extends Component {
     });
   };
   getTopics = () => {
-    fetch("/api/topics").then(response => {
+    fetch("/api/topicsToCreateModifyQuestionAssignment", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        editedQuestionAssignment: this.props.match.params.id
+      })
+    }).then(response => {
       this.populateSelect(
         response,
         "allTopics",
