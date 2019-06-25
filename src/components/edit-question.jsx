@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import NewQuestion from "./new-question";
 import SavedQuestion from "./saved-question";
 import { Button } from "reactstrap";
+import { UserTypeContext } from "../user-type-context";
 class EditQuestion extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +45,15 @@ class EditQuestion extends Component {
   };
 
   getAllTopics = () => {
-    fetch("/api/topics").then(response => {
+    //TODO change
+    fetch("/api/topics", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token: this.context.userType })
+    }).then(response => {
       if (response.ok) {
         response
           .json()
@@ -191,4 +200,5 @@ class EditQuestion extends Component {
     );
   }
 }
+EditQuestion.contextType = UserTypeContext;
 export default EditQuestion;

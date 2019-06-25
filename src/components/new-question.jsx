@@ -175,7 +175,14 @@ class NewQuestion extends Component {
   };
 
   getTopics = () => {
-    fetch("/api/topics").then(response => {
+    fetch("/api/topics", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token: this.context.userType })
+    }).then(response => {
       this.populateSelect(
         response,
         "topic",
