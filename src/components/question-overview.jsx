@@ -58,13 +58,15 @@ function AssignmentPreview({
             : null}
         </Row>
       </Container>
-      <Button
-        color="primary"
-        tag={Link}
-        to={"/newQuestion/" + encodeURIComponent(topic)}
-      >
-        Create Question
-      </Button>
+      {new Date(startTime) < new Date() && new Date(endTime) > new Date() ? (
+        <Button
+          color="primary"
+          tag={Link}
+          to={"/newQuestion/" + encodeURIComponent(topic)}
+        >
+          Create Question
+        </Button>
+      ) : null}
     </React.Fragment>
   );
 
