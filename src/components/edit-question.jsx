@@ -11,7 +11,7 @@ class EditQuestion extends Component {
       isEdit: false,
       questionId: this.props.match.params.id,
       approved: false,
-      allTopics: {},
+      allTopics: new Map(),
       allQuestionTypes: {},
       title: "",
       lastSeenByStudent: "",
@@ -45,7 +45,6 @@ class EditQuestion extends Component {
   };
 
   getAllTopics = () => {
-    //TODO change
     fetch("/api/topics", {
       method: "POST",
       headers: {
@@ -149,7 +148,7 @@ class EditQuestion extends Component {
     });
   };
   render() {
-    // console.log(this.state.allTopics);
+    console.log(this.state.allTopics);
     let lastKnownQuestionVersion =
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
@@ -171,7 +170,7 @@ class EditQuestion extends Component {
             title={this.state.title}
             text={lastKnownQuestionVersion.text.value}
             answers={lastKnownQuestionVersion.answers}
-            topic={this.state.selectedTopic}
+            topic={this.state.selectedTopic.id}
             questionType={lastKnownQuestionVersion.questionType}
             history={this.props.history}
             oldData={oldData}
@@ -185,7 +184,7 @@ class EditQuestion extends Component {
               title={this.state.title}
               text={questionVersion.text}
               answers={questionVersion.answers}
-              topic={this.state.allTopics.get(this.state.selectedTopic)}
+              topic={this.state.selectedTopic.name}
               questionType={this.state.allQuestionTypes.get(
                 questionVersion.questionType
               )}
