@@ -58,7 +58,8 @@ function AssignmentPreview({
             : null}
         </Row>
       </Container>
-      {new Date(startTime) < new Date() && new Date(endTime) > new Date() ? (
+      {(new Date(startTime) < new Date() && new Date(endTime) > new Date()) ||
+      isTeacher ? (
         <Button
           color="primary"
           tag={Link}
