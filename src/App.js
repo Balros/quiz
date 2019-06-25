@@ -18,9 +18,11 @@ class App extends Component {
     this.toggleUserType = () => {
       localStorage.setItem(
         "userType",
-        localStorage.getItem("userType") === userTypes.student
-          ? userTypes.teacher
-          : userTypes.student
+        localStorage.getItem("userType") === userTypes.student1
+          ? userTypes.student2
+          : localStorage.getItem("userType") === userTypes.student2
+            ? userTypes.teacher
+            : userTypes.student1
       );
       this.setState({
         userType: localStorage.getItem("userType")

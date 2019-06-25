@@ -225,10 +225,11 @@ class NewQuestion extends Component {
   addExistingAnswers(answers) {
     let tmpAnswer = {};
     answers.forEach((answer, index) => {
+      console.log(answer);
       tmpAnswer = {
         id: index,
         answer_text: answer.text.value,
-        correct: answer.correct.value
+        correct: answer.correct
       };
       let updatedControls = this.state.formControls;
       let updatedAnswers = this.state.answers;
@@ -335,7 +336,7 @@ class NewQuestion extends Component {
               onClick={this.formSubmitHandler}
               disabled={!this.state.formIsValid}
             >
-              Submit
+              {this.props.questionId ? "Edit" : "Create"}
             </Button>
           </CardBody>
         </Card>

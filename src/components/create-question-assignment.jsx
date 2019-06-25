@@ -10,6 +10,7 @@ import {
   Table
 } from "reactstrap";
 import DatePicker from "react-datepicker";
+import { UserTypeContext } from "../user-type-context";
 
 export class CreateQuestionAssignment extends Component {
   constructor(props) {
@@ -162,14 +163,13 @@ export class CreateQuestionAssignment extends Component {
       endDate: this.state.endDate,
       description: this.state.description,
       topic: this.state.topic,
-      selectedAgents: this.state.selectedAgents
+      selectedAgents: this.state.selectedAgents,
+      token: this.context.userType
     };
     let fetchAddress = "/api/createQuestionAssignment";
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
       data["dataOld"] = this.state.dataOld;
-
-      fetchAddress = "/api/editQuestionAssignment";
     }
     fetch(fetchAddress, {
       method: "POST",
@@ -195,7 +195,8 @@ export class CreateQuestionAssignment extends Component {
     }
   }
   render() {
-    return (
+    return this.context.userType ===
+      "http://www.semanticweb.org/semanticweb#Teacher" ? (
       <React.Fragment>
         <h3>Create new question assignment</h3>
         <Form>
@@ -301,12 +302,15 @@ export class CreateQuestionAssignment extends Component {
             </Table>
           </FormGroup>
           <Button color="success" onClick={() => this.formSubmit()}>
-            Create assignment
+            {this.isEdit() ? "Edit assignment" : "Create assignment"}
           </Button>
         </Form>
       </React.Fragment>
+    ) : (
+      <div>Not authorized.</div>
     );
   }
 }
 
+CreateQuestionAssignment.contextType = UserTypeContext;
 export default CreateQuestionAssignment;

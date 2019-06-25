@@ -141,12 +141,11 @@ class EditQuestion extends Component {
   };
   render() {
     // console.log(this.state.allTopics);
-    console.log(this.state.questionVersions);
     let lastKnownQuestionVersion =
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
         : null;
-    let oldDataaa = {
+    let oldData = {
       lastSeenByStudent: this.state.lastSeenByStudent,
       lastSeenByTeacher: this.state.lastSeenByTeacher,
       lastChange: this.state.lastChange,
@@ -166,7 +165,7 @@ class EditQuestion extends Component {
             topic={this.state.selectedTopic}
             questionType={lastKnownQuestionVersion.questionType}
             history={this.props.history}
-            oldData={oldDataaa}
+            oldData={oldData}
           />
         ) : null}
         {this.state.questionVersions.map(questionVersion => {
@@ -184,7 +183,7 @@ class EditQuestion extends Component {
               comments={questionVersion.comments}
               onSendComment={this.onSendComment}
               approved={this.state.approved}
-              oldData={oldDataaa}
+              oldData={oldData}
             />
           );
         })}
