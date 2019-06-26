@@ -79,23 +79,19 @@ export class CreateQuestionAssignment extends Component {
         response
           .json()
           .then(data => {
-            if (data && data.length && data.length > 0) {
-              const item = data[0];
-              const selectedAgentsTmp = item.selectedAgents.map(
-                selectedAgent => {
-                  return selectedAgent.id;
-                }
-              );
-              item.selectedAgents = Array.from(selectedAgentsTmp);
-              this.setState({
-                startDate: new Date(item.startDate),
-                endDate: new Date(item.endDate),
-                description: item.description,
-                topic: item.topic,
-                selectedAgents: selectedAgentsTmp,
-                dataOld: item
-              });
-            }
+            const item = data;
+            const selectedAgentsTmp = item.selectedAgents.map(selectedAgent => {
+              return selectedAgent.id;
+            });
+            item.selectedAgents = Array.from(selectedAgentsTmp);
+            this.setState({
+              startDate: new Date(item.startDate),
+              endDate: new Date(item.endDate),
+              description: item.description,
+              topic: item.topic,
+              selectedAgents: selectedAgentsTmp,
+              dataOld: item
+            });
           })
           .catch(error => {
             console.log(error);
@@ -114,40 +110,45 @@ export class CreateQuestionAssignment extends Component {
         editedQuestionAssignment: this.props.match.params.id
       })
     }).then(response => {
-      this.populateSelect(
-        response,
-        "allTopics",
-        "topic",
-        this.props.location.state && this.props.location.state.topic
-          ? this.props.location.state.topic
-          : null
-      );
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            this.populateSelect(
+              data,
+              "allTopics",
+              "topic",
+              this.props.location.state && this.props.location.state.topic
+                ? this.props.location.state.topic
+                : null
+            );
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     });
   };
   getAgents = () => {
     fetch("/api/getAgents").then(response => {
-      this.populateSelect(response, "allAgents", "agent", null);
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            this.populateSelect(data, "allAgents", "agent", null);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     });
   };
-  populateSelect(response, selectElement, elementStateName, selected) {
-    if (response.ok) {
-      response
-        .json()
-        .then(data => {
-          let selectedTmp = selected
-            ? selected
-            : data.length >= 1
-              ? data[0].id
-              : "";
-          this.setState({
-            [selectElement]: data,
-            [elementStateName]: selectedTmp
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+  populateSelect(data, selectElement, elementStateName, selected) {
+    let selectedTmp = selected ? selected : data.length >= 1 ? data[0].id : "";
+    this.setState({
+      [selectElement]: data,
+      [elementStateName]: selectedTmp
+    });
   }
   handleChange = e => {
     const name = e.target.name;

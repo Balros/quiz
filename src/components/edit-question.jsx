@@ -28,9 +28,8 @@ class EditQuestion extends Component {
           .json()
           .then(data => {
             if (data && data.length && data.length > 0) {
-              const item = data;
               let questionTypeMap = new Map();
-              item.forEach(questionType => {
+              data.forEach(questionType => {
                 questionTypeMap.set(questionType.id, questionType.name);
               });
               this.setState({
@@ -83,17 +82,16 @@ class EditQuestion extends Component {
           response
             .json()
             .then(data => {
-              if (data && data.length && data.length > 0) {
-                const item = data[0];
+              if (data) {
                 this.setState({
-                  title: item.title,
-                  selectedTopic: item.topic,
-                  lastSeenByStudent: item.lastSeenByStudent,
-                  lastSeenByTeacher: item.lastSeenByTeacher,
-                  lastChange: item.lastChange,
-                  approvedAsPublicId: item.approvedAsPublicId,
-                  approvedAsPrivateId: item.approvedAsPrivateId,
-                  questionVersions: item.questionVersions
+                  title: data.title,
+                  selectedTopic: data.topic,
+                  lastSeenByStudent: data.lastSeenByStudent,
+                  lastSeenByTeacher: data.lastSeenByTeacher,
+                  lastChange: data.lastChange,
+                  approvedAsPublicId: data.approvedAsPublicId,
+                  approvedAsPrivateId: data.approvedAsPrivateId,
+                  questionVersions: data.questionVersions
                 });
               }
             })
