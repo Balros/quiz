@@ -10,10 +10,11 @@ class EditQuestion extends Component {
       questionVersions: [],
       isEdit: false,
       questionId: this.props.match.params.id,
-      approved: false,
       allTopics: new Map(),
       allQuestionTypes: {},
       title: "",
+      approvedAsPublicId: "",
+      approvedAsPrivateId: "",
       lastSeenByStudent: "",
       lastSeenByTeacher: "",
       lastChange: ""
@@ -90,6 +91,8 @@ class EditQuestion extends Component {
                   lastSeenByStudent: item.lastSeenByStudent,
                   lastSeenByTeacher: item.lastSeenByTeacher,
                   lastChange: item.lastChange,
+                  approvedAsPublicId: item.approvedAsPublicId,
+                  approvedAsPrivateId: item.approvedAsPrivateId,
                   questionVersions: item.questionVersions
                 });
               }
@@ -102,31 +105,12 @@ class EditQuestion extends Component {
     );
   };
 
-  getQuestionInfo = () => {
-    fetch("/api/getQuestionInfo/" + this.state.questionId).then(response => {
-      if (response.ok) {
-        response
-          .json()
-          .then(data => {
-            if (data) {
-              this.setState({
-                approved: data
-              });
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    });
-  };
-
   componentDidMount() {
     this.getAllQuestionTypes();
     this.getAllTopics();
     this.getQuestionVersions();
-    this.getQuestionInfo();
   }
+
   onSendComment = (questionVersionId, newComment, oldData) => {
     const data = {
       questionVersionId: questionVersionId,
@@ -148,7 +132,6 @@ class EditQuestion extends Component {
     });
   };
   render() {
-    console.log(this.state.allTopics);
     let lastKnownQuestionVersion =
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
@@ -190,7 +173,18 @@ class EditQuestion extends Component {
               )}
               comments={questionVersion.comments}
               onSendComment={this.onSendComment}
-              approved={this.state.approved}
+              isApprovedAsPublic={
+                this.state.approvedAsPublicId === questionVersion.id
+              }
+              isApprovedAsPrivate={
+                this.state.approvedAsPrivateId === questionVersion.id
+              }
+              isTeacher={
+                this.context.userType ===
+                "http://www.semanticweb.org/semanticweb#Teacher"
+                  ? true
+                  : false
+              }
               oldData={oldData}
             />
           );

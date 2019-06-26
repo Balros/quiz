@@ -28,7 +28,8 @@ function AssignmentPreview({
   let questionsNotApproved = [];
   if (questions) {
     questions.forEach(question => {
-      question.approved
+      question.approvedAsPublicId !== "undefined" ||
+      question.approvedAsPrivateId !== "undefined"
         ? questionsApproved.push(question)
         : questionsNotApproved.push(question);
     });

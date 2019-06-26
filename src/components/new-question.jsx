@@ -232,7 +232,6 @@ class NewQuestion extends Component {
   addExistingAnswers(answers) {
     let tmpAnswer = {};
     answers.forEach((answer, index) => {
-      console.log(answer);
       tmpAnswer = {
         id: index,
         answer_text: answer.text.value,

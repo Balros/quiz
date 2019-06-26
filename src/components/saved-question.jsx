@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import "../App.css";
 import AnswerComponent from "../answer-component";
+import { UserTypeContext } from "../user-type-context";
 
 class SavedQuestion extends Component {
   constructor(props) {
@@ -49,25 +50,22 @@ class SavedQuestion extends Component {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        token: this.props.userType,
+        token: this.context.userType,
         questionVersionUri: this.props.id,
         isPrivate: isPrivate
       })
     }).then(response => {
       if (response.ok) {
-        response
-          .json()
-          .then(data => {})
-          .catch(error => {
-            console.log(error);
-          });
+        this.props.history.push("/questionGroups");
       }
     });
   };
-
+  //TODO make questionVersion green when approved
   render() {
     return (
       <div className="question">
+        {this.props.isApprovedAsPublic ? <div>Approved as Public</div> : null}
+        {this.props.isApprovedAsPrivate ? <div>Approved as Private</div> : null}
         <ListGroup>
           <ListGroupItem>
             <FormGroup row>
@@ -176,7 +174,7 @@ class SavedQuestion extends Component {
               </InputGroupAddon>
             </InputGroup>
           </ListGroupItem>
-          {!this.props.approved ? (
+          {this.props.isTeacher ? (
             <ListGroupItem color="success">
               <ButtonDropdown
                 isOpen={this.state.dropdownOpen}
@@ -202,4 +200,5 @@ class SavedQuestion extends Component {
   }
 }
 
+SavedQuestion.contextType = UserTypeContext;
 export default SavedQuestion;
