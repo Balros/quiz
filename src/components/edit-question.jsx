@@ -183,6 +183,7 @@ class EditQuestion extends Component {
                   ? true
                   : false
               }
+              history={this.props.history}
               oldData={oldData}
             />
           );
