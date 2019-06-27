@@ -109,12 +109,12 @@ class EditQuestion extends Component {
     this.getQuestionVersions();
   }
 
-  onSendComment = (questionVersionId, newComment, oldData) => {
+  onSendComment = (questionVersionId, newComment) => {
     const data = {
+      questionId: this.props.match.params.id,
       questionVersionId: questionVersionId,
       newComment: newComment,
-      token: localStorage.getItem("userType"),
-      oldData: oldData
+      token: localStorage.getItem("userType")
     };
     fetch("/api/addComment", {
       method: "POST",
@@ -134,12 +134,6 @@ class EditQuestion extends Component {
       this.state.questionVersions && this.state.questionVersions.length
         ? this.state.questionVersions[0]
         : null;
-    let oldData = {
-      lastSeenByStudent: this.state.lastSeenByStudent,
-      lastSeenByTeacher: this.state.lastSeenByTeacher,
-      lastChange: this.state.lastChange,
-      questionId: this.state.questionId
-    };
     return (
       <React.Fragment>
         <Button onClick={() => this.setState({ isEdit: !this.state.isEdit })}>
@@ -154,7 +148,6 @@ class EditQuestion extends Component {
             topic={this.state.selectedTopic.id}
             questionType={lastKnownQuestionVersion.questionType}
             history={this.props.history}
-            oldData={oldData}
           />
         ) : null}
         {this.state.questionVersions.map(questionVersion => {
@@ -184,7 +177,6 @@ class EditQuestion extends Component {
                   : false
               }
               history={this.props.history}
-              oldData={oldData}
             />
           );
         })}

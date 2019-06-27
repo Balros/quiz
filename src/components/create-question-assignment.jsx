@@ -23,8 +23,7 @@ export class CreateQuestionAssignment extends Component {
       topic: "",
       agent: "",
       description: "",
-      selectedAgents: [],
-      dataOld: []
+      selectedAgents: []
     };
   }
 
@@ -89,8 +88,7 @@ export class CreateQuestionAssignment extends Component {
               endDate: new Date(item.endDate),
               description: item.description,
               topic: item.topic,
-              selectedAgents: selectedAgentsTmp,
-              dataOld: item
+              selectedAgents: selectedAgentsTmp
             });
           })
           .catch(error => {
@@ -179,7 +177,6 @@ export class CreateQuestionAssignment extends Component {
     let fetchAddress = "/api/createQuestionAssignment";
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
-      data["dataOld"] = this.state.dataOld;
     }
     fetch(fetchAddress, {
       method: "POST",

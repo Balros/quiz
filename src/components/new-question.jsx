@@ -103,9 +103,6 @@ class NewQuestion extends Component {
       questionType: this.state.formControls["questionType"].value,
       answers: answers
     };
-    if (this.props.oldData) {
-      data.oldData = this.props.oldData;
-    }
     fetch("/api/createNewQuestion", {
       method: "POST",
       headers: {

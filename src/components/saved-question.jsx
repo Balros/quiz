@@ -164,8 +164,7 @@ class SavedQuestion extends Component {
                   onClick={() =>
                     this.props.onSendComment(
                       this.props.id,
-                      this.state.newComment,
-                      this.props.oldData
+                      this.state.newComment
                     )
                   }
                 >
