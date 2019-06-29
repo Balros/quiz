@@ -141,7 +141,7 @@ class EditQuestion extends Component {
         </Button>
         {this.state.isEdit && lastKnownQuestionVersion ? (
           <NewQuestion
-            questionId={this.props.match.params.id}
+            questionId={decodeURIComponent(this.props.match.params.id)}
             title={this.state.title}
             text={lastKnownQuestionVersion.text.value}
             answers={lastKnownQuestionVersion.answers}

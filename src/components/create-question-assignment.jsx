@@ -78,17 +78,12 @@ export class CreateQuestionAssignment extends Component {
         response
           .json()
           .then(data => {
-            const item = data;
-            const selectedAgentsTmp = item.selectedAgents.map(selectedAgent => {
-              return selectedAgent.id;
-            });
-            item.selectedAgents = Array.from(selectedAgentsTmp);
             this.setState({
-              startDate: new Date(item.startDate),
-              endDate: new Date(item.endDate),
-              description: item.description,
-              topic: item.topic,
-              selectedAgents: selectedAgentsTmp
+              startDate: new Date(data.startDate),
+              endDate: new Date(data.endDate),
+              description: data.description,
+              topic: data.topic,
+              selectedAgents: data.selectedAgents
             });
           })
           .catch(error => {

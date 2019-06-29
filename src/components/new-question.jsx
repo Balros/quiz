@@ -226,6 +226,7 @@ class NewQuestion extends Component {
         });
     }
   }
+
   addExistingAnswers(answers) {
     let tmpAnswer = {};
     answers.forEach((answer, index) => {
@@ -256,6 +257,7 @@ class NewQuestion extends Component {
   componentDidMount() {
     this.getTopics();
     this.getQuestionTypes();
+    console.log(this.props.questionId);
     if (this.props.questionId) this.addExistingAnswers(this.props.answers);
   }
 
