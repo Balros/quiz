@@ -1,6 +1,6 @@
 import React from "react";
 import Navigation from "./navigation";
-import UserTypeTogglerButton from "../user-type-toggler-button";
+import UserTypeTogglerButton from "./user-type-toggler-button";
 
 const Header = () => {
   return (

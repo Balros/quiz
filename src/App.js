@@ -1,16 +1,20 @@
 import React, { Component } from "react";
-
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import NewQuestion from "./components/new-question.jsx";
-import Home from "./components/home.jsx";
-import QuestionsOverview from "./components/question-overview.jsx";
-import EditQuestion from "./components/edit-question.jsx";
-import Error from "./components/error.jsx";
-import CreateQuestionAssignment from "./components/create-question-assignment.jsx";
-import { UserTypeContext, userTypes } from "./user-type-context";
-import Header from "./components/header.jsx";
+import Error from "./components/error";
+import Home from "./components/home";
+import Header from "./components/header/header";
+import {
+  UserTypeContext,
+  userTypes
+} from "./components/common/user-type-context";
+import NewQuestion from "./components/question/new-question";
+import NewQuiz from "./components/quiz/new-quiz";
+import QuestionsOverview from "./components/topics/topics-overview";
+import EditQuestion from "./components/question/question-overview";
+import CreateQuestionAssignment from "./components/topics/new-question-assignment";
+import NewTopic from "./components/topics/new-topic";
 import { Container, Row, Col } from "reactstrap";
-import CreateTopic from "./components/create-topic.jsx";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -56,7 +60,7 @@ class App extends Component {
                     />
                     <Route path="/newQuestion/:id" component={NewQuestion} />
                     <Route path="/newQuestion" component={NewQuestion} exact />
-                    <Route path="/createTopic" component={CreateTopic} />
+                    <Route path="/createTopic" component={NewTopic} />
                     <Route path="/question/:id" component={EditQuestion} />
                     <Route
                       path="/editQuestionAssignment/:id"
@@ -66,6 +70,7 @@ class App extends Component {
                       path="/newQuestionAssignment"
                       component={CreateQuestionAssignment}
                     />
+                    <Route path="/newQuiz" component={NewQuiz} exact />
                     <Route component={Error} />
                   </Switch>
                 </Col>

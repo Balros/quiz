@@ -1,18 +1,10 @@
 import React, { Component } from "react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  Button,
-  Label,
-  Form,
-  FormGroup,
-  Input,
-  Table
-} from "reactstrap";
-import DatePicker from "react-datepicker";
-import { UserTypeContext } from "../user-type-context";
+import { Button, Label, Form, FormGroup, Input } from "reactstrap";
+import { UserTypeContext } from "../common/user-type-context";
+import AgentOperator from "../common/agent-operator";
+import AssignmentHeader from "../common/assignment-header";
 
-export class CreateQuestionAssignment extends Component {
+export class NewQuestionAssignment extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,48 +19,6 @@ export class CreateQuestionAssignment extends Component {
     };
   }
 
-  deleteAgent(selectedAgentUri) {
-    let currentSelectedAgents = this.state.selectedAgents;
-    let deletedAgentUri = "";
-    const index = currentSelectedAgents.indexOf(selectedAgentUri);
-    if (index !== -1) {
-      currentSelectedAgents.splice(index, 1);
-      deletedAgentUri = selectedAgentUri;
-    }
-    this.setState({
-      selectedAgents: currentSelectedAgents,
-      agent: deletedAgentUri
-    });
-  }
-  selectAgent = () => {
-    const currentAllAgents = this.state.allAgents;
-    const currentSelectedAgents = this.state.selectedAgents;
-    let selectFind = false;
-    let nextAgent = this.state.agent;
-    currentAllAgents.forEach(agent => {
-      if (agent.id === this.state.agent) {
-        currentSelectedAgents.push(this.state.agent);
-        selectFind = !selectFind;
-      }
-    });
-    let isEmpty = true;
-    if (selectFind) {
-      currentAllAgents.forEach(agent => {
-        if (currentSelectedAgents.indexOf(agent.id) === -1) {
-          isEmpty = false;
-          nextAgent = agent.id;
-        }
-      });
-    }
-    if (isEmpty) {
-      nextAgent = "";
-    }
-    this.setState({
-      allAgents: currentAllAgents,
-      agent: nextAgent,
-      selectedAgents: currentSelectedAgents
-    });
-  };
   getQuestionAssignment = () => {
     fetch(
       "/api/getQuestionAssignment/" +
@@ -169,11 +119,10 @@ export class CreateQuestionAssignment extends Component {
       selectedAgents: this.state.selectedAgents,
       token: this.context.userType
     };
-    let fetchAddress = "/api/createQuestionAssignment";
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
     }
-    fetch(fetchAddress, {
+    fetch("/api/createQuizAssignment", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -202,26 +151,14 @@ export class CreateQuestionAssignment extends Component {
       <React.Fragment>
         <h3>Create new question assignment</h3>
         <Form>
-          <FormGroup>
-            <Label for="startDate">Start date</Label>
-            <DatePicker
-              id="startDate"
-              name="startDate"
-              dateFormat="dd/MM/yyyy"
-              selected={this.state.startDate}
-              onChange={this.onStartDateChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="endDate">End date</Label>
-            <DatePicker
-              id="endDate"
-              name="endDate"
-              dateFormat="dd/MM/yyyy"
-              selected={this.state.endDate}
-              onChange={this.onEndDateChange}
-            />
-          </FormGroup>
+          <AssignmentHeader
+            startDate={this.state.startDate}
+            endDate={this.state.endDate}
+            description={this.state.description}
+            onStartDateChange={this.onStartDateChange}
+            onEndDateChange={this.onEndDateChange}
+            handleChange={this.handleChange}
+          />
           <FormGroup>
             <Label for="topic">Topic</Label>
             <Input
@@ -240,69 +177,11 @@ export class CreateQuestionAssignment extends Component {
               })}
             </Input>
           </FormGroup>
-          <FormGroup>
-            <Label for="description">Description</Label>
-            <Input
-              type="textarea"
-              name="description"
-              id="description"
-              value={this.state.description}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="agent">Assign to</Label>
-            <InputGroup>
-              <Input
-                type="select"
-                name="agent"
-                id="agent"
-                value={this.state.agent}
-                onChange={this.handleChange}
-              >
-                {this.state.allAgents.map(agent => {
-                  return this.state.selectedAgents.indexOf(agent.id) === -1 ? (
-                    <option key={agent.id} value={agent.id}>
-                      {agent.name}
-                    </option>
-                  ) : null;
-                })}
-              </Input>
-              <InputGroupAddon addonType="append">
-                <Button color="success" onClick={this.selectAgent}>
-                  Add
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup>
-            <Label for="agents">Assign to</Label>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.allAgents.map(agent => {
-                  return this.state.selectedAgents.indexOf(agent.id) !== -1 ? (
-                    <tr key={agent.id}>
-                      <td>{agent.name}</td>
-                      <td>
-                        <Button
-                          color="danger"
-                          onClick={() => this.deleteAgent(agent.id)}
-                        >
-                          X
-                        </Button>
-                      </td>
-                    </tr>
-                  ) : null;
-                })}
-              </tbody>
-            </Table>
-          </FormGroup>
+          <AgentOperator
+            allAgents={this.state.allAgents}
+            selectedAgents={this.state.selectedAgents}
+            setSelectedAgents={this.setSelectedAgents}
+          />
           <Button color="success" onClick={() => this.formSubmit()}>
             {this.isEdit() ? "Edit assignment" : "Create assignment"}
           </Button>
@@ -314,5 +193,5 @@ export class CreateQuestionAssignment extends Component {
   }
 }
 
-CreateQuestionAssignment.contextType = UserTypeContext;
-export default CreateQuestionAssignment;
+NewQuestionAssignment.contextType = UserTypeContext;
+export default NewQuestionAssignment;

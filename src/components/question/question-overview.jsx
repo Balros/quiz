@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import NewQuestion from "./new-question";
 import SavedQuestion from "./saved-question";
 import { Button } from "reactstrap";
-import { UserTypeContext } from "../user-type-context";
-class EditQuestion extends Component {
+import { UserTypeContext } from "../common/user-type-context";
+class QuestionOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -184,5 +184,5 @@ class EditQuestion extends Component {
     );
   }
 }
-EditQuestion.contextType = UserTypeContext;
-export default EditQuestion;
+QuestionOverview.contextType = UserTypeContext;
+export default QuestionOverview;

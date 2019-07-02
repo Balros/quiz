@@ -1,4 +1,4 @@
-import { UserTypeContext } from "./user-type-context.jsx";
+import { UserTypeContext } from "../common/user-type-context";
 import React from "react";
 
 function UserTypeTogglerButton() {

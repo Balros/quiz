@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Label, FormGroup, Input, Form, Button } from "reactstrap";
-import "../App.css";
 
-class CreateTopic extends Component {
+class NewTopic extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,4 +60,4 @@ class CreateTopic extends Component {
   }
 }
 
-export default CreateTopic;
+export default NewTopic;

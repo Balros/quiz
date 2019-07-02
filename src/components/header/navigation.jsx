@@ -16,6 +16,9 @@ const Navigation = () => {
       <li>
         <NavLink to="/createTopic">Create topic</NavLink>
       </li>
+      <li>
+        <NavLink to="/newQuiz">New quiz</NavLink>
+      </li>
     </ul>
   );
 };

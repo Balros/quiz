@@ -13,7 +13,7 @@ import {
   ListGroup,
   ListGroupItem
 } from "reactstrap";
-import { UserTypeContext } from "../user-type-context.jsx";
+import { UserTypeContext } from "../common/user-type-context";
 
 function AssignmentPreview({
   id,
@@ -166,7 +166,7 @@ function TopicPreview({
     </React.Fragment>
   );
 }
-class QuestionsOverview extends Component {
+class TopicsOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -237,6 +237,6 @@ class QuestionsOverview extends Component {
     );
   }
 }
-QuestionsOverview.contextType = UserTypeContext;
+TopicsOverview.contextType = UserTypeContext;
 
-export default QuestionsOverview;
+export default TopicsOverview;

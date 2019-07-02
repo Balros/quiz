@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import validate from "../validate";
-import "../App.css";
-import AnswerComponent from "../answer-component";
+import validate from "../../validate";
+import AnswerComponent from "./answer-component";
 import {
   Button,
   Form,
@@ -11,7 +10,7 @@ import {
   FormGroup,
   Input
 } from "reactstrap";
-import { UserTypeContext } from "../user-type-context";
+import { UserTypeContext } from "../common/user-type-context";
 
 class NewQuestion extends Component {
   constructor(props) {
