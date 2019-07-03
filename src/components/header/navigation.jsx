@@ -17,7 +17,10 @@ const Navigation = () => {
         <NavLink to="/createTopic">Create topic</NavLink>
       </li>
       <li>
-        <NavLink to="/newQuiz">New quiz</NavLink>
+        <NavLink to="/newQuizAssignment">New quiz assignment</NavLink>
+      </li>
+      <li>
+        <NavLink to="/quizAssignmentsOverview">Quiz overview</NavLink>
       </li>
     </ul>
   );

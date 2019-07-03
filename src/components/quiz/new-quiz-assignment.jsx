@@ -1,15 +1,16 @@
 import React, { Component } from "react";
-import { Label, Form, FormGroup, Row, Col, Button } from "reactstrap";
+import { Label, Form, FormGroup, Row, Col, Input, Button } from "reactstrap";
 import AgentOperator from "../common/agent-operator";
 import { DragDropContext } from "react-beautiful-dnd";
 import QuestionsColumn from "./questions-column";
 import { UserTypeContext } from "../common/user-type-context";
 import AssignmentHeader from "../common/assignment-header";
 
-class NewQuiz extends Component {
+class NewQuizAssignment extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: "",
       startDate: new Date(),
       endDate: new Date(),
       allAgents: [],
@@ -35,6 +36,7 @@ class NewQuiz extends Component {
     //       .json()
     //       .then(data => {
     //         this.setState({
+    //            title: data.title,
     //           startDate: new Date(data.startDate),
     //           endDate: new Date(data.endDate),
     //           description: data.description,
@@ -210,6 +212,7 @@ class NewQuiz extends Component {
   };
   formSubmit = () => {
     const data = {
+      title: this.state.title,
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       description: this.state.description,
@@ -229,8 +232,7 @@ class NewQuiz extends Component {
       body: JSON.stringify(data)
     }).then(response => {
       if (response.ok) {
-        // this.props.history.push("/questionGroups");
-        // this.props.history.push("/quizGroups");
+        this.props.history.push("/quizAssignmentsOverview");
       }
     });
   };
@@ -246,8 +248,20 @@ class NewQuiz extends Component {
   render() {
     return (
       <React.Fragment>
-        <h3>Create new quiz</h3>
+        <h3>Create new quiz assignment</h3>
         <Form>
+          <FormGroup>
+            <Label for="title">Title</Label>
+            <Input
+              id="title"
+              type="text"
+              name="title"
+              placeholder={"Add title"}
+              value={this.state.title}
+              onChange={this.handleChange}
+              valid={this.state.title.length > 0}
+            />
+          </FormGroup>
           <AssignmentHeader
             startDate={this.state.startDate}
             endDate={this.state.endDate}
@@ -293,5 +307,5 @@ class NewQuiz extends Component {
   }
 }
 
-NewQuiz.contextType = UserTypeContext;
-export default NewQuiz;
+NewQuizAssignment.contextType = UserTypeContext;
+export default NewQuizAssignment;

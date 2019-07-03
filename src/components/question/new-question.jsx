@@ -51,6 +51,7 @@ class NewQuestion extends Component {
     let answers = [];
 
     this.state = {
+      title: this.props.title ? this.props.title : "",
       answers: answers,
       formIsValid: false,
       formControls: tmpFormControls,
@@ -58,6 +59,15 @@ class NewQuestion extends Component {
       untouchedCss: untouchedCss
     };
   }
+
+  changeTitle = event => {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({
+      [name]: value
+    });
+  };
+
   changeHandler = event => {
     const name = event.target.name;
     const value =
@@ -100,6 +110,7 @@ class NewQuestion extends Component {
       questionText: this.state.formControls["question"].value,
       topic: this.state.formControls["topic"].value,
       questionType: this.state.formControls["questionType"].value,
+      title: this.state.title,
       answers: answers
     };
     fetch("/api/createNewQuestion", {
@@ -256,7 +267,6 @@ class NewQuestion extends Component {
   componentDidMount() {
     this.getTopics();
     this.getQuestionTypes();
-    console.log(this.props.questionId);
     if (this.props.questionId) this.addExistingAnswers(this.props.answers);
   }
 
@@ -265,6 +275,19 @@ class NewQuestion extends Component {
       <Form>
         <Card>
           <CardBody>
+            <FormGroup>
+              <Label for="title">Title</Label>
+              <Input
+                id="title"
+                type="text"
+                name="title"
+                placeholder={"Add title"}
+                value={this.state.title}
+                onChange={this.changeTitle}
+                // touched={this.state.formControls.question.touched}
+                valid={this.state.title.length > 0}
+              />
+            </FormGroup>
             <FormGroup>
               <Label for="question">Question</Label>
               <Input

@@ -24,16 +24,6 @@ function AssignmentPreview({
   isTeacher,
   topic
 }) {
-  let questionsApproved = [];
-  let questionsNotApproved = [];
-  if (questions) {
-    questions.forEach(question => {
-      question.approvedAsPublicId !== "undefined" ||
-      question.approvedAsPrivateId !== "undefined"
-        ? questionsApproved.push(question)
-        : questionsNotApproved.push(question);
-    });
-  }
   return (
     <React.Fragment>
       <h5>Assignment</h5>
@@ -49,16 +39,7 @@ function AssignmentPreview({
       <div>{description}</div>
       <div>{startTime}</div>
       <div>{endTime}</div>
-      <Container>
-        <Row>
-          {questionsApproved
-            ? questionsTable("Approved", questionsApproved, isTeacher)
-            : null}
-          {questionsNotApproved
-            ? questionsTable("In progress", questionsNotApproved, isTeacher)
-            : null}
-        </Row>
-      </Container>
+
       {(new Date(startTime) < new Date() && new Date(endTime) > new Date()) ||
       isTeacher ? (
         <Button
@@ -71,57 +52,54 @@ function AssignmentPreview({
       ) : null}
     </React.Fragment>
   );
-
-  function questionsTable(headerText, questions, isTeacher) {
-    return (
-      <Col>
-        <Table bordered>
-          <thead>
-            <tr>
-              <th>{headerText}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <ListGroup>
-                  {questions
-                    ? questions.map(question => {
-                        return (
-                          <ListGroupItem
-                            key={question.id}
-                            tag="a"
-                            href={
-                              "/question/" + encodeURIComponent(question.id)
-                            }
-                            action
-                          >
-                            {"Question name: " + question.title + " "}
-                            {isTeacher ? (
-                              new Date(question.lastSeenByTeacher) <
-                              new Date(question.lastChange) ? (
-                                <Badge color="danger">Changed</Badge>
-                              ) : (
-                                <Badge color="success">Not Changed</Badge>
-                              )
-                            ) : new Date(question.lastSeenByStudent) <
+}
+function questionsTable(headerText, questions, isTeacher) {
+  return (
+    <Col>
+      <Table bordered>
+        <thead>
+          <tr>
+            <th>{headerText}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <ListGroup>
+                {questions
+                  ? questions.map(question => {
+                      return (
+                        <ListGroupItem
+                          key={question.id}
+                          tag="a"
+                          href={"/question/" + encodeURIComponent(question.id)}
+                          action
+                        >
+                          {"Question name: " + question.title + " "}
+                          {isTeacher ? (
+                            new Date(question.lastSeenByTeacher) <
                             new Date(question.lastChange) ? (
                               <Badge color="danger">Changed</Badge>
                             ) : (
                               <Badge color="success">Not Changed</Badge>
-                            )}
-                          </ListGroupItem>
-                        );
-                      })
-                    : null}
-                </ListGroup>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </Col>
-    );
-  }
+                            )
+                          ) : new Date(question.lastSeenByStudent) <
+                          new Date(question.lastChange) ? (
+                            <Badge color="danger">Changed</Badge>
+                          ) : (
+                            <Badge color="success">Not Changed</Badge>
+                          )}
+                        </ListGroupItem>
+                      );
+                    })
+                  : null}
+              </ListGroup>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </Col>
+  );
 }
 function TopicPreview({
   id,
@@ -132,6 +110,16 @@ function TopicPreview({
   collapse,
   isTeacher
 }) {
+  let questionsApproved = [];
+  let questionsNotApproved = [];
+  if (questions) {
+    questions.forEach(question => {
+      question.approvedAsPublicId !== "undefined" ||
+      question.approvedAsPrivateId !== "undefined"
+        ? questionsApproved.push(question)
+        : questionsNotApproved.push(question);
+    });
+  }
   return (
     <React.Fragment>
       <Button color="primary" onClick={toggle}>
@@ -155,13 +143,22 @@ function TopicPreview({
             ) : assignment ? (
               <AssignmentPreview
                 {...assignment}
-                questions={questions}
                 isTeacher={isTeacher}
                 topic={id}
               />
             ) : null}
           </CardBody>
         </Card>
+        <Container>
+          <Row>
+            {questionsApproved
+              ? questionsTable("Approved", questionsApproved, isTeacher)
+              : null}
+            {questionsNotApproved
+              ? questionsTable("In progress", questionsNotApproved, isTeacher)
+              : null}
+          </Row>
+        </Container>
       </Collapse>
     </React.Fragment>
   );
@@ -213,27 +210,25 @@ class TopicsOverview extends Component {
   }
   render() {
     return (
-      <React.Fragment>
-        <ul>
-          {this.state.topics.map((topic, index) => {
-            return (
-              <li key={topic.id}>
-                <TopicPreview
-                  {...topic}
-                  isTeacher={
-                    this.context.userType ===
-                    "http://www.semanticweb.org/semanticweb#Teacher"
-                      ? true
-                      : false
-                  }
-                  toggle={this.toggle(index)}
-                  collapse={this.state.topicCollapse[index]}
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </React.Fragment>
+      <ListGroup flush>
+        {this.state.topics.map((topic, index) => {
+          return (
+            <ListGroupItem key={topic.id}>
+              <TopicPreview
+                {...topic}
+                isTeacher={
+                  this.context.userType ===
+                  "http://www.semanticweb.org/semanticweb#Teacher"
+                    ? true
+                    : false
+                }
+                toggle={this.toggle(index)}
+                collapse={this.state.topicCollapse[index]}
+              />
+            </ListGroupItem>
+          );
+        })}
+      </ListGroup>
     );
   }
 }
