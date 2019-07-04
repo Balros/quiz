@@ -44,5 +44,6 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://matfyz.sk:3001",
+  "homepage": "http://matfyz.sk/~grund"
 }
