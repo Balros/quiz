@@ -11,6 +11,7 @@ import {
   Input
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
+import { fetchCreateNewQuestion } from "../../api-adapter";
 
 class NewQuestion extends Component {
   constructor(props) {
@@ -113,7 +114,7 @@ class NewQuestion extends Component {
       title: this.state.title,
       answers: answers
     };
-    fetch("/api/createNewQuestion", {
+    fetch(fetchCreateNewQuestion, {
       method: "POST",
       headers: {
         Accept: "application/json",
