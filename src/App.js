@@ -46,7 +46,7 @@ class App extends Component {
   render() {
     return (
       <UserTypeContext.Provider value={this.state}>
-        <BrowserRouter basename="/~grund"/>
+        <BrowserRouter basename="/~grund">
           <React.Fragment>
             <Header />
             <Container>
