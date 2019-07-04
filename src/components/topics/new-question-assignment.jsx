@@ -141,6 +141,11 @@ export class NewQuestionAssignment extends Component {
       }
     });
   };
+  setSelectedAgents = selectedAgents => {
+    this.setState({
+      selectedAgents: selectedAgents
+    });
+  };
   isEdit = () => {
     return this.props.match.params.id ? true : false;
   };
