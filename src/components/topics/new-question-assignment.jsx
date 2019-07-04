@@ -3,6 +3,12 @@ import { Button, Label, Form, FormGroup, Input } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import AgentOperator from "../common/agent-operator";
 import AssignmentHeader from "../common/assignment-header";
+import {
+  fetchGetQuestionAssignment,
+  fetchTopicsToCreateModifyQuestionAssignment,
+  fetchGetAgents,
+  fetchCreateQuizAssignment
+} from "../../api-adapter";
 
 export class NewQuestionAssignment extends Component {
   constructor(props) {
@@ -21,7 +27,7 @@ export class NewQuestionAssignment extends Component {
 
   getQuestionAssignment = () => {
     fetch(
-      "/api/getQuestionAssignment/" +
+      fetchGetQuestionAssignment() +
         encodeURIComponent(this.props.match.params.id)
     ).then(response => {
       if (response.ok) {
@@ -43,7 +49,7 @@ export class NewQuestionAssignment extends Component {
     });
   };
   getTopics = () => {
-    fetch("/api/topicsToCreateModifyQuestionAssignment", {
+    fetch(fetchTopicsToCreateModifyQuestionAssignment(), {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -73,7 +79,7 @@ export class NewQuestionAssignment extends Component {
     });
   };
   getAgents = () => {
-    fetch("/api/getAgents").then(response => {
+    fetch(fetchGetAgents()).then(response => {
       if (response.ok) {
         response
           .json()
@@ -122,7 +128,7 @@ export class NewQuestionAssignment extends Component {
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
     }
-    fetch("/api/createQuizAssignment", {
+    fetch(fetchCreateQuizAssignment(), {
       method: "POST",
       headers: {
         Accept: "application/json",

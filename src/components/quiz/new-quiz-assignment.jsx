@@ -5,6 +5,12 @@ import { DragDropContext } from "react-beautiful-dnd";
 import QuestionsColumn from "./questions-column";
 import { UserTypeContext } from "../common/user-type-context";
 import AssignmentHeader from "../common/assignment-header";
+import {
+  fetchGetQuestions,
+  fetchGetQuizAssignment,
+  fetchGetAgents,
+  fetchCreateQuizAssignment
+} from "../../api-adapter";
 
 class NewQuizAssignment extends Component {
   constructor(props) {
@@ -27,7 +33,7 @@ class NewQuizAssignment extends Component {
   };
 
   getQuestions = () => {
-    fetch("/api/getQuestions").then(response => {
+    fetch(fetchGetQuestions()).then(response => {
       if (response.ok) {
         response
           .json()
@@ -65,7 +71,7 @@ class NewQuizAssignment extends Component {
 
   getQuizAssignment = () => {
     fetch(
-      "/api/getQuizAssignment/" + encodeURIComponent(this.props.match.params.id)
+      fetchGetQuizAssignment() + encodeURIComponent(this.props.match.params.id)
     ).then(response => {
       if (response.ok) {
         response
@@ -111,7 +117,7 @@ class NewQuizAssignment extends Component {
   };
 
   getAgents = () => {
-    fetch("/api/getAgents").then(response => {
+    fetch(fetchGetAgents()).then(response => {
       if (response.ok) {
         response
           .json()
@@ -245,7 +251,7 @@ class NewQuizAssignment extends Component {
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
     }
-    fetch("/api/createQuizAssignment", {
+    fetch(fetchCreateQuizAssignment(), {
       method: "POST",
       headers: {
         Accept: "application/json",

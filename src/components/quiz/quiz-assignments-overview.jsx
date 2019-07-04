@@ -13,6 +13,7 @@ import {
   ListGroupItem
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
+import { fetchQuizAssignments } from "../../api-adapter";
 
 function AssignmentPreview({
   id,
@@ -135,7 +136,7 @@ class QuizAssignmentsOverview extends Component {
     this.setState({ assignmentCollapse: updatedAssignmentCollapse });
   };
   getAssignments = () => {
-    fetch("/api/quizAssignments", {
+    fetch(fetchQuizAssignments(), {
       method: "POST",
       headers: {
         Accept: "application/json",

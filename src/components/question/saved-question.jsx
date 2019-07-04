@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import AnswerComponent from "./answer-component";
 import { UserTypeContext } from "../common/user-type-context";
+import { fetchApproveQuestionVersion } from "../../api-adapter";
 
 class SavedQuestion extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class SavedQuestion extends Component {
   };
 
   onApprove = isPrivate => {
-    fetch("/api/approveQuestionVersion", {
+    fetch(fetchApproveQuestionVersion(), {
       method: "POST",
       headers: {
         Accept: "application/json",

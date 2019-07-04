@@ -3,6 +3,12 @@ import NewQuestion from "./new-question";
 import SavedQuestion from "./saved-question";
 import { Button } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
+import {
+  fetchQuestionTypes,
+  fetchTopics,
+  fetchGetQuestionVersions,
+  fetchAddComment
+} from "../../api-adapter";
 class QuestionOverview extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +28,7 @@ class QuestionOverview extends Component {
   }
 
   getAllQuestionTypes = () => {
-    fetch("/api/questionTypes").then(response => {
+    fetch(fetchQuestionTypes()).then(response => {
       if (response.ok) {
         response
           .json()
@@ -45,7 +51,7 @@ class QuestionOverview extends Component {
   };
 
   getAllTopics = () => {
-    fetch("/api/topics", {
+    fetch(fetchTopics(), {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -76,31 +82,29 @@ class QuestionOverview extends Component {
   };
 
   getQuestionVersions = () => {
-    fetch("/api/getQuestionVersions/" + this.state.questionId).then(
-      response => {
-        if (response.ok) {
-          response
-            .json()
-            .then(data => {
-              if (data) {
-                this.setState({
-                  title: data.title,
-                  selectedTopic: data.topic,
-                  lastSeenByStudent: data.lastSeenByStudent,
-                  lastSeenByTeacher: data.lastSeenByTeacher,
-                  lastChange: data.lastChange,
-                  approvedAsPublicId: data.approvedAsPublicId,
-                  approvedAsPrivateId: data.approvedAsPrivateId,
-                  questionVersions: data.questionVersions
-                });
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
+    fetch(fetchGetQuestionVersions() + this.state.questionId).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            if (data) {
+              this.setState({
+                title: data.title,
+                selectedTopic: data.topic,
+                lastSeenByStudent: data.lastSeenByStudent,
+                lastSeenByTeacher: data.lastSeenByTeacher,
+                lastChange: data.lastChange,
+                approvedAsPublicId: data.approvedAsPublicId,
+                approvedAsPrivateId: data.approvedAsPrivateId,
+                questionVersions: data.questionVersions
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
-    );
+    });
   };
 
   componentDidMount() {
@@ -116,7 +120,7 @@ class QuestionOverview extends Component {
       newComment: newComment,
       token: localStorage.getItem("userType")
     };
-    fetch("/api/addComment", {
+    fetch(fetchAddComment(), {
       method: "POST",
       headers: {
         Accept: "application/json",

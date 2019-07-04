@@ -14,6 +14,7 @@ import {
   ListGroupItem
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
+import { fetchQuestionGroups } from "../../api-adapter";
 
 function AssignmentPreview({
   id,
@@ -177,7 +178,7 @@ class TopicsOverview extends Component {
     this.setState({ topicCollapse: updatedTopicCollapse });
   };
   getQuestionGroups = () => {
-    fetch("/api/questionGroups/", {
+    fetch(fetchQuestionGroups(), {
       method: "POST",
       headers: {
         Accept: "application/json",

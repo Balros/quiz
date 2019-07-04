@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Label, FormGroup, Input, Form, Button } from "reactstrap";
+import { fetchCreateTopic } from "../../api-adapter";
 
 class NewTopic extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class NewTopic extends Component {
   };
 
   formSubmit = () => {
-    fetch("/api/createTopic", {
+    fetch(fetchCreateTopic(), {
       method: "POST",
       headers: {
         Accept: "application/json",
