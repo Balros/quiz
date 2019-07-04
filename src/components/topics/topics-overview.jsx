@@ -177,7 +177,7 @@ class TopicsOverview extends Component {
     this.setState({ topicCollapse: updatedTopicCollapse });
   };
   getQuestionGroups = () => {
-    fetch("/api/questionGroups/", {
+    fetch(":3001/api/questionGroups/", {
       method: "POST",
       headers: {
         Accept: "application/json",
