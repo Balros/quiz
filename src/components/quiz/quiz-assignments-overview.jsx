@@ -48,7 +48,7 @@ function AssignmentPreview({
               <Button
                 color="primary"
                 tag={Link}
-                to={"/editQuizAssignment/" + encodeURIComponent(id)}
+                to={"/newQuizAssignment/" + encodeURIComponent(id)}
               >
                 Edit Quiz Assignment
               </Button>
@@ -172,6 +172,12 @@ class QuizAssignmentsOverview extends Component {
             <ListGroupItem key={assignment.id}>
               <AssignmentPreview
                 {...assignment}
+                isTeacher={
+                  this.context.userType ===
+                  "http://www.semanticweb.org/semanticweb#Teacher"
+                    ? true
+                    : false
+                }
                 toggle={this.toggle(index)}
                 collapse={this.state.assignmentCollapse[index]}
               />

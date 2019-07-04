@@ -72,6 +72,10 @@ class App extends Component {
                       component={CreateQuestionAssignment}
                     />
                     <Route
+                      path="/newQuizAssignment/:id"
+                      component={NewQuizAssignment}
+                    />
+                    <Route
                       path="/newQuizAssignment"
                       component={NewQuizAssignment}
                       exact

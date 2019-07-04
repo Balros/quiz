@@ -26,31 +26,6 @@ class NewQuizAssignment extends Component {
     });
   };
 
-  getQuiz = () => {
-    // fetch(
-    //   "/api/getQuestionAssignment/" +
-    //     encodeURIComponent(this.props.match.params.id)
-    // ).then(response => {
-    //   if (response.ok) {
-    //     response
-    //       .json()
-    //       .then(data => {
-    //         this.setState({
-    //            title: data.title,
-    //           startDate: new Date(data.startDate),
-    //           endDate: new Date(data.endDate),
-    //           description: data.description,
-    //           topic: data.topic,
-    //           selectedAgents: data.selectedAgents
-    //         });
-    //       })
-    //       .catch(error => {
-    //         console.log(error);
-    //       });
-    //   }
-    // });
-  };
-
   getQuestions = () => {
     fetch("/api/getQuestions").then(response => {
       if (response.ok) {
@@ -79,6 +54,53 @@ class NewQuizAssignment extends Component {
             };
             this.setState({
               questions: initialDataDatabase //TODO change for data from database
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
+  getQuizAssignment = () => {
+    fetch(
+      "/api/getQuizAssignment/" + encodeURIComponent(this.props.match.params.id)
+    ).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            console.log(data);
+            const tmpQuestions = [];
+            data.quiz.questions.forEach(selectedQuestion => {
+              tmpQuestions.push(selectedQuestion.selectedQuestion.id);
+            });
+            data.questions = tmpQuestions;
+            const newQuestions = {
+              ...this.state.questions,
+              columns: {
+                ...this.state.questions.columns,
+                availableQuestions: {
+                  ...this.state.questions.columns.availableQuestions,
+                  questionIds: this.state.questions.columns.availableQuestions.questionIds.filter(
+                    x => !data.questions.includes(x)
+                  )
+                },
+                choosenQuestions: {
+                  ...this.state.questions.columns.choosenQuestions,
+                  questionIds: data.questions
+                }
+              }
+            };
+            this.setState({
+              title: data.title,
+              startDate: new Date(data.startDate),
+              endDate: new Date(data.endDate),
+              description: data.description,
+              topic: data.topic,
+              selectedAgents: data.selectedAgents,
+              questions: newQuestions
             });
           })
           .catch(error => {
@@ -237,12 +259,12 @@ class NewQuizAssignment extends Component {
     });
   };
   componentDidMount() {
-    this.getAgents();
-    //TODO when edit is happening
-    // if (this.isEdit()) {
-    //   this.getQuestionAssignment();
-    // }
     this.getQuestions();
+    this.getAgents();
+    if (this.isEdit()) {
+      this.getQuizAssignment();
+    }
+    console.log(this.state);
   }
 
   render() {

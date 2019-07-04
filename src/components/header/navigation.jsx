@@ -20,7 +20,9 @@ const Navigation = () => {
         <NavLink to="/newQuizAssignment">New quiz assignment</NavLink>
       </li>
       <li>
-        <NavLink to="/quizAssignmentsOverview">Quiz overview</NavLink>
+        <NavLink to="/quizAssignmentsOverview">
+          Quiz assignment overview
+        </NavLink>
       </li>
     </ul>
   );
