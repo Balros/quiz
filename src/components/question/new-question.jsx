@@ -118,7 +118,7 @@ class NewQuestion extends Component {
       title: this.state.title,
       answers: answers
     };
-    fetch(fetchCreateNewQuestion, {
+    fetch(fetchCreateNewQuestion(), {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -187,7 +187,7 @@ class NewQuestion extends Component {
   };
 
   getTopics = () => {
-    fetch(fetchTopics, {
+    fetch(fetchTopics(), {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -208,7 +208,7 @@ class NewQuestion extends Component {
   };
 
   getQuestionTypes = () => {
-    fetch(fetchQuestionTypes).then(response => {
+    fetch(fetchQuestionTypes()).then(response => {
       this.populateSelect(response, "questionType", this.props.questionType);
     });
   };
