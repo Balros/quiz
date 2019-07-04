@@ -7,3 +7,11 @@ process.env.NODE_ENV === "development"
 export const fetchCreateNewQuestion = () => {
   return `${API_URL}/createNewQuestion`;
 };
+
+export const fetchTopics = () => {
+  return `${API_URL}/topics`;
+};
+
+export const fetchQuestionTypes = () => {
+  return `${API_URL}/questionTypes`;
+};

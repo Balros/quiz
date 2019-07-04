@@ -11,7 +11,11 @@ import {
   Input
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
-import { fetchCreateNewQuestion } from "../../api-adapter";
+import {
+  fetchCreateNewQuestion,
+  fetchQuestionTypes,
+  fetchTopics
+} from "../../api-adapter";
 
 class NewQuestion extends Component {
   constructor(props) {
@@ -183,7 +187,7 @@ class NewQuestion extends Component {
   };
 
   getTopics = () => {
-    fetch("/api/topics", {
+    fetch(fetchTopics, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -204,7 +208,7 @@ class NewQuestion extends Component {
   };
 
   getQuestionTypes = () => {
-    fetch("/api/questionTypes").then(response => {
+    fetch(fetchQuestionTypes).then(response => {
       this.populateSelect(response, "questionType", this.props.questionType);
     });
   };
