@@ -7,7 +7,7 @@ import {
   fetchGetQuestionAssignment,
   fetchTopicsToCreateModifyQuestionAssignment,
   fetchGetAgents,
-  fetchCreateQuizAssignment
+  fetchCreateQuestionAssignment
 } from "../../api-adapter";
 
 export class NewQuestionAssignment extends Component {
@@ -128,7 +128,7 @@ export class NewQuestionAssignment extends Component {
     if (this.isEdit()) {
       data["id"] = this.props.match.params.id;
     }
-    fetch(fetchCreateQuizAssignment(), {
+    fetch(fetchCreateQuestionAssignment(), {
       method: "POST",
       headers: {
         Accept: "application/json",

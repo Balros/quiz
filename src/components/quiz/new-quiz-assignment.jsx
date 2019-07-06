@@ -26,12 +26,6 @@ class NewQuizAssignment extends Component {
     };
   }
 
-  setSelectedAgents = selectedAgents => {
-    this.setState({
-      selectedAgents: selectedAgents
-    });
-  };
-
   getQuestions = () => {
     fetch(fetchGetQuestions()).then(response => {
       if (response.ok) {
@@ -77,37 +71,40 @@ class NewQuizAssignment extends Component {
         response
           .json()
           .then(data => {
-            console.log(data);
-            const tmpQuestions = [];
-            data.quiz.questions.forEach(selectedQuestion => {
-              tmpQuestions.push(selectedQuestion.selectedQuestion.id);
-            });
-            data.questions = tmpQuestions;
-            const newQuestions = {
-              ...this.state.questions,
-              columns: {
-                ...this.state.questions.columns,
-                availableQuestions: {
-                  ...this.state.questions.columns.availableQuestions,
-                  questionIds: this.state.questions.columns.availableQuestions.questionIds.filter(
-                    x => !data.questions.includes(x)
-                  )
-                },
-                choosenQuestions: {
-                  ...this.state.questions.columns.choosenQuestions,
-                  questionIds: data.questions
-                }
+            if (data) {
+              const tmpQuestions = [];
+              if (data.quiz.questions) {
+                data.quiz.questions.forEach(selectedQuestion => {
+                  tmpQuestions.push(selectedQuestion.selectedQuestion.id);
+                });
               }
-            };
-            this.setState({
-              title: data.title,
-              startDate: new Date(data.startDate),
-              endDate: new Date(data.endDate),
-              description: data.description,
-              topic: data.topic,
-              selectedAgents: data.selectedAgents,
-              questions: newQuestions
-            });
+              data.questions = tmpQuestions;
+              const newQuestions = {
+                ...this.state.questions,
+                columns: {
+                  ...this.state.questions.columns,
+                  availableQuestions: {
+                    ...this.state.questions.columns.availableQuestions,
+                    questionIds: this.state.questions.columns.availableQuestions.questionIds.filter(
+                      x => !data.questions.includes(x)
+                    )
+                  },
+                  choosenQuestions: {
+                    ...this.state.questions.columns.choosenQuestions,
+                    questionIds: data.questions
+                  }
+                }
+              };
+              this.setState({
+                title: data.title,
+                startDate: new Date(data.startDate),
+                endDate: new Date(data.endDate),
+                description: data.description,
+                topic: data.topic,
+                selectedAgents: data.selectedAgents,
+                questions: newQuestions
+              });
+            }
           })
           .catch(error => {
             console.log(error);
@@ -249,7 +246,7 @@ class NewQuizAssignment extends Component {
       token: this.context.userType
     };
     if (this.isEdit()) {
-      data["id"] = this.props.match.params.id;
+      data.id = this.props.match.params.id;
     }
     fetch(fetchCreateQuizAssignment(), {
       method: "POST",
@@ -270,7 +267,6 @@ class NewQuizAssignment extends Component {
     if (this.isEdit()) {
       this.getQuizAssignment();
     }
-    console.log(this.state);
   }
 
   render() {

@@ -15,7 +15,6 @@ class QuestionOverview extends Component {
     this.state = {
       questionVersions: [],
       isEdit: false,
-      questionId: this.props.match.params.id,
       allTopics: new Map(),
       allQuestionTypes: {},
       title: "",
@@ -82,29 +81,31 @@ class QuestionOverview extends Component {
   };
 
   getQuestionVersions = () => {
-    fetch(fetchGetQuestionVersions() + this.state.questionId).then(response => {
-      if (response.ok) {
-        response
-          .json()
-          .then(data => {
-            if (data) {
-              this.setState({
-                title: data.title,
-                selectedTopic: data.topic,
-                lastSeenByStudent: data.lastSeenByStudent,
-                lastSeenByTeacher: data.lastSeenByTeacher,
-                lastChange: data.lastChange,
-                approvedAsPublicId: data.approvedAsPublicId,
-                approvedAsPrivateId: data.approvedAsPrivateId,
-                questionVersions: data.questionVersions
-              });
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
+    fetch(fetchGetQuestionVersions() + this.props.match.params.id).then(
+      response => {
+        if (response.ok) {
+          response
+            .json()
+            .then(data => {
+              if (data) {
+                this.setState({
+                  title: data.title,
+                  selectedTopic: data.topic,
+                  lastSeenByStudent: data.lastSeenByStudent,
+                  lastSeenByTeacher: data.lastSeenByTeacher,
+                  lastChange: data.lastChange,
+                  approvedAsPublicId: data.approvedAsPublicId,
+                  approvedAsPrivateId: data.approvedAsPrivateId,
+                  questionVersions: data.questionVersions
+                });
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
       }
-    });
+    );
   };
 
   componentDidMount() {

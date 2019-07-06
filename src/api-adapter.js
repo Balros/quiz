@@ -17,7 +17,7 @@ export const fetchQuestionTypes = () => {
 };
 
 export const fetchGetQuestionVersions = () => {
-  return `${API_URL}/getQuestionVersions`;
+  return `${API_URL}/getQuestionVersions/`;
 };
 export const fetchAddComment = () => {
   return `${API_URL}/addComment`;
@@ -29,7 +29,7 @@ export const fetchGetQuestions = () => {
   return `${API_URL}/getQuestions`;
 };
 export const fetchGetQuizAssignment = () => {
-  return `${API_URL}/getQuizAssignment`;
+  return `${API_URL}/getQuizAssignment/`;
 };
 export const fetchGetAgents = () => {
   return `${API_URL}/getAgents`;
@@ -37,11 +37,14 @@ export const fetchGetAgents = () => {
 export const fetchCreateQuizAssignment = () => {
   return `${API_URL}/createQuizAssignment`;
 };
+export const fetchCreateQuestionAssignment = () => {
+  return `${API_URL}/createQuestionAssignment`;
+};
 export const fetchQuizAssignments = () => {
   return `${API_URL}/quizAssignments`;
 };
 export const fetchGetQuestionAssignment = () => {
-  return `${API_URL}/getQuestionAssignment`;
+  return `${API_URL}/getQuestionAssignment/`;
 };
 export const fetchTopicsToCreateModifyQuestionAssignment = () => {
   return `${API_URL}/topicsToCreateModifyQuestionAssignment`;

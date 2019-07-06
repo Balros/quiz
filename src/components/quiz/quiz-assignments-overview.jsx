@@ -168,7 +168,6 @@ class QuizAssignmentsOverview extends Component {
     return (
       <ListGroup flush>
         {this.state.assignments.map((assignment, index) => {
-          console.log(assignment);
           return (
             <ListGroupItem key={assignment.id}>
               <AssignmentPreview
