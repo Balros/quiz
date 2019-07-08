@@ -21,6 +21,7 @@ function AssignmentPreview({
   description,
   startTime,
   endTime,
+  quiz,
   quizzesTaken,
   isTeacher,
   toggle,
@@ -67,17 +68,17 @@ function AssignmentPreview({
                   : null}
               </Row>
             </Container>
-            {/* {(new Date(startTime) < new Date() &&
+            {(new Date(startTime) < new Date() &&
               new Date(endTime) > new Date()) ||
             isTeacher ? (
               <Button
                 color="primary"
                 tag={Link}
-                to={"/quiz/" + encodeURIComponent(topic)}
+                to={"/quiz/" + encodeURIComponent(id)}
               >
                 Take Quiz
               </Button>
-            ) : null} */}
+            ) : null}
           </CardBody>
         </Card>
       </Collapse>
@@ -165,6 +166,7 @@ class QuizAssignmentsOverview extends Component {
     this.getAssignments();
   }
   render() {
+    console.log(this.state.assignments);
     return (
       <ListGroup flush>
         {this.state.assignments.map((assignment, index) => {

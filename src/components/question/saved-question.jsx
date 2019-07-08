@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {
   Label,
   FormGroup,
+  CardTitle,
   Input,
   ListGroupItem,
   ListGroupItemHeading,
@@ -68,88 +69,100 @@ class SavedQuestion extends Component {
         {this.props.isApprovedAsPrivate ? <div>Approved as Private</div> : null}
         <Card>
           <CardBody>
-            <FormGroup>
-              <Label for="title">Title</Label>
-              <Input
-                type="text"
-                name="title"
-                disabled
-                value={this.props.title}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="question">Question</Label>
-              <Input
-                type="text"
-                name="question"
-                disabled
-                value={this.props.text.value}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="topic">Topic</Label>
-              <Input type="select" name="topic" disabled>
-                <option>{this.props.topic}</option>
-              </Input>
-            </FormGroup>
-            <FormGroup>
-              <Label for="questionType">Question type</Label>
-              <Input type="select" name="questionType" disabled>
-                <option>{this.props.questionType}</option>
-              </Input>
-            </FormGroup>
-            {this.props.answers.map(answer => {
-              return (
-                <FormGroup key={answer.id}>
-                  <AnswerComponent
-                    readOnly
-                    correct={answer.correct}
-                    value={answer.text.value}
-                    disabled={true}
-                  />
-                </FormGroup>
-              );
-            })}
-            {this.props.comments ? (
-              this.props.comments.map(comment => {
-                return (
-                  <ListGroupItem key={comment.id} color="warning">
-                    <ListGroupItemHeading>
-                      {comment.author.name}
-                    </ListGroupItemHeading>
-                    <ListGroupItemText>{comment.text}</ListGroupItemText>
-                    <ListGroupItemText>{comment.date}</ListGroupItemText>
-                  </ListGroupItem>
-                );
-              })
+            {this.props.isQuizTake ? (
+              <CardTitle>{this.props.title}</CardTitle>
             ) : (
               <FormGroup>
-                <ListGroupItemText>No comments.</ListGroupItemText>
-              </FormGroup>
-            )}
-            <FormGroup color="warning">
-              <InputGroup>
+                <Label for="title">Title</Label>
                 <Input
                   type="text"
-                  name="newComment"
-                  placeholder="Write a comment..."
-                  onChange={this.changeHandler}
+                  name="title"
+                  disabled
+                  value={this.props.title}
                 />
-                <InputGroupAddon addonType="append">
-                  <Button
-                    color="warning"
-                    onClick={() =>
-                      this.props.onSendComment(
-                        this.props.id,
-                        this.state.newComment
-                      )
-                    }
-                  >
-                    Send
-                  </Button>
-                </InputGroupAddon>
-              </InputGroup>
-            </FormGroup>
+              </FormGroup>
+            )}
+            {this.props.isQuizTake && this.props.text ? (
+              <CardTitle>{this.props.text.value}</CardTitle>
+            ) : (
+              <FormGroup>
+                <Label for="question">Question</Label>
+                <Input
+                  type="text"
+                  name="question"
+                  disabled
+                  value={this.props.text && this.props.text.value}
+                />
+              </FormGroup>
+            )}
+            {this.props.topic ? (
+              <FormGroup>
+                <Label for="topic">Topic</Label>
+                <Input type="select" name="topic" disabled>
+                  <option>{this.props.topic}</option>
+                </Input>
+              </FormGroup>
+            ) : null}
+            {this.props.questionType ? (
+              <FormGroup>
+                <Label for="questionType">Question type</Label>
+                <Input type="select" name="questionType" disabled>
+                  <option>{this.props.questionType}</option>
+                </Input>
+              </FormGroup>
+            ) : null}
+            {this.props.answers
+              ? this.props.answers.map(answer => {
+                  return (
+                    <FormGroup key={answer.id}>
+                      <AnswerComponent
+                        isQuizTake={this.props.isQuizTake}
+                        correct={answer.correct}
+                        value={answer.text.value}
+                        disabled={true}
+                      />
+                    </FormGroup>
+                  );
+                })
+              : null}
+            {this.props.comments
+              ? this.props.comments.map(comment => {
+                  return (
+                    <ListGroupItem key={comment.id} color="warning">
+                      <ListGroupItemHeading>
+                        {comment.author.name}
+                      </ListGroupItemHeading>
+                      <ListGroupItemText>{comment.text}</ListGroupItemText>
+                      <ListGroupItemText>{comment.date}</ListGroupItemText>
+                    </ListGroupItem>
+                  );
+                })
+              : null}
+            {this.props.isQuizTake ? null : (
+              <FormGroup color="warning">
+                <InputGroup>
+                  <Input
+                    type="text"
+                    name="newComment"
+                    placeholder="Write a comment..."
+                    onChange={this.changeHandler}
+                  />
+                  <InputGroupAddon addonType="append">
+                    <Button
+                      color="warning"
+                      onClick={() =>
+                        this.props.onSendComment(
+                          this.props.id,
+                          this.state.newComment
+                        )
+                      }
+                    >
+                      Send
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormGroup>
+            )}
             {this.props.isTeacher ? (
               <FormGroup color="success">
                 <ButtonDropdown
