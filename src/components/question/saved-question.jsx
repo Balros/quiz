@@ -116,10 +116,15 @@ class SavedQuestion extends Component {
                   return (
                     <FormGroup key={answer.id}>
                       <AnswerComponent
+                        checkboxName={answer.id}
                         isQuizTake={this.props.isQuizTake}
+                        onChange={this.props.onChange}
                         correct={answer.correct}
                         value={answer.text.value}
-                        disabled={true}
+                        isTextEnabled={
+                          !this.props.isQuizTake && !this.props.isPreview
+                        }
+                        isCheckboxEnabled={!this.props.isPreview}
                       />
                     </FormGroup>
                   );

@@ -10,7 +10,7 @@ export class QuizGenerate extends Component {
     this.state = {
       quizAssignmentId: "",
       quizTakeId: "",
-      questions: []
+      orderedQuestions: new Map()
     };
   }
   generateQuizTake = () => {
@@ -27,10 +27,26 @@ export class QuizGenerate extends Component {
         response
           .json()
           .then(data => {
+            let orderedQuestions = {};
+            data.quizTake.orderedQuestions.forEach(question => {
+              const answers = {};
+              question.questionVersion.answers.forEach(answer => {
+                answers[answer.id] = {
+                  id: answer.id,
+                  correct: false,
+                  text: answer.text
+                };
+              });
+              orderedQuestions[question.id] = {
+                text: question.questionVersion.text,
+                answers: answers
+              };
+            });
+
             this.setState({
               quizAssignmentId: data.id,
               quizTakeId: data.quizTake.id,
-              questions: data.quizTake.orderedQuestions
+              orderedQuestions: orderedQuestions
             });
           })
           .catch(error => {
@@ -39,24 +55,38 @@ export class QuizGenerate extends Component {
       }
     });
   };
+  onChange = (event, orderedQuestionId) => {
+    const name = event.target.name;
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+    const orderedQuestion = this.state.orderedQuestions[orderedQuestionId];
+    const answer = orderedQuestion.answers[name];
+    answer.correct = value;
+    orderedQuestion.answers[name] = answer;
+    this.setState({
+      orderedQuestions: {
+        ...this.state.orderedQuestions,
+        orderedQuestionId: orderedQuestion
+      }
+    });
+  };
   componentDidMount() {
     this.generateQuizTake();
   }
   render() {
-    console.log(this.state);
     return (
       <React.Fragment>
-        {this.state.questions.map(question => {
-          console.log(question);
-          console.log(question.questionVersion.text);
+        {Object.keys(this.state.orderedQuestions).map(key => {
+          const value = this.state.orderedQuestions[key];
           return (
             <SavedQuestion
-              key={question.id}
+              key={key}
               isQuizTake={true}
-              // id={questionVersion.id}
-              text={question.questionVersion.text}
-              answers={question.questionVersion.answers}
-              // history={this.props.history}
+              text={value.text}
+              answers={Object.values(value.answers)}
+              onChange={e => this.onChange(e, key)}
             />
           );
         })}

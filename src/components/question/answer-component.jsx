@@ -14,7 +14,7 @@ export class AnswerComponent extends Component {
               name={this.props.checkboxName}
               checked={this.props.correct}
               onChange={this.props.onChange}
-              readOnly={this.props.disabled && !this.props.isQuizTake}
+              readOnly={!this.props.isCheckboxEnabled}
             />
           </InputGroupText>
         </InputGroupAddon>
@@ -24,7 +24,7 @@ export class AnswerComponent extends Component {
           value={this.props.value}
           onChange={this.props.onChange}
           valid={this.props.valid}
-          disabled={this.props.disabled}
+          disabled={!this.props.isTextEnabled}
         />
       </InputGroup>
     );

@@ -182,7 +182,7 @@ class QuestionOverview extends Component {
                   : false
               }
               history={this.props.history}
-              isQuizTake={false}
+              isPreview={true}
             />
           );
         })}

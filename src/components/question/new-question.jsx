@@ -350,8 +350,10 @@ class NewQuestion extends Component {
             {this.state.answers.map(value => (
               <AnswerComponent
                 key={value.answerId}
+                isTextEnabled={true}
                 name={value.answerInputName}
                 checkboxName={value.answerCheckboxName}
+                isCheckboxEnabled={true}
                 placeholder={
                   this.state.formControls[value.answerInputName].placeholder
                 }
