@@ -10,7 +10,7 @@ export class QuizGenerate extends Component {
     this.state = {
       quizAssignmentId: "",
       quizTakeId: "",
-      orderedQuestions: new Map()
+      orderedQuestions: {}
     };
   }
   generateQuizTake = () => {
@@ -76,6 +76,7 @@ export class QuizGenerate extends Component {
     this.generateQuizTake();
   }
   render() {
+    console.log(this.state.orderedQuestions);
     return (
       <React.Fragment>
         {Object.keys(this.state.orderedQuestions).map(key => {
