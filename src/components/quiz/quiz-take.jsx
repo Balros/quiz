@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { UserTypeContext } from "../common/user-type-context";
-import { fetchCreateQuizTake } from "../../api-adapter";
+import { fetchGetQuizTake } from "../../api-adapter";
 import SavedQuestion from "../question/saved-question";
 
-export class QuizGenerate extends Component {
+export class QuizTake extends Component {
   static contextType = UserTypeContext;
   constructor(props) {
     super(props);
@@ -14,19 +14,17 @@ export class QuizGenerate extends Component {
     };
   }
   generateQuizTake = () => {
-    fetch(
-      fetchCreateQuizTake() + encodeURIComponent(this.props.match.params.id),
-      {
-        method: "GET",
-        headers: {
-          token: this.context.userType
-        }
+    fetch(fetchGetQuizTake() + encodeURIComponent(this.props.match.params.id), {
+      method: "GET",
+      headers: {
+        token: this.context.userType
       }
-    ).then(response => {
+    }).then(response => {
       if (response.ok) {
         response
           .json()
           .then(data => {
+            console.log(data);
             let orderedQuestions = {};
             data.quizTake.orderedQuestions.forEach(question => {
               const answers = {};
@@ -96,4 +94,4 @@ export class QuizGenerate extends Component {
   }
 }
 
-export default QuizGenerate;
+export default QuizTake;

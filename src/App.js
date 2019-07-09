@@ -15,7 +15,7 @@ import NewTopic from "./components/topics/new-topic";
 import { Container, Row, Col } from "reactstrap";
 import QuizAssignmentsOverview from "./components/quiz/quiz-assignments-overview";
 import NewQuizAssignment from "./components/quiz/new-quiz-assignment";
-import QuizGenerate from "./components/quiz/quiz-generate";
+import QuizTake from "./components/quiz/quiz-take";
 
 class App extends Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class App extends Component {
                     <Route path="/newQuestion" component={NewQuestion} exact />
                     <Route path="/createTopic" component={NewTopic} />
                     <Route path="/question/:id" component={EditQuestion} />
-                    <Route path="/quiz/:id" component={QuizGenerate} />
+                    <Route path="/quiz/:id" component={QuizTake} />
                     <Route
                       path="/editQuestionAssignment/:id"
                       component={CreateQuestionAssignment}

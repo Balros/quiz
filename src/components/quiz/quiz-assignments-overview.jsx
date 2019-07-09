@@ -166,7 +166,6 @@ class QuizAssignmentsOverview extends Component {
     this.getAssignments();
   }
   render() {
-    console.log(this.state.assignments);
     return (
       <ListGroup flush>
         {this.state.assignments.map((assignment, index) => {

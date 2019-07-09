@@ -55,6 +55,6 @@ export const fetchCreateTopic = () => {
 export const fetchQuestionGroups = () => {
   return `${API_URL}/questionGroups`;
 };
-export const fetchCreateQuizTake = () => {
-  return `${API_URL}/createQuizTake/`;
+export const fetchGetQuizTake = () => {
+  return `${API_URL}/getQuizTake/`;
 };
