@@ -229,6 +229,14 @@ class TopicsOverview extends Component {
             </ListGroupItem>
           );
         })}
+        {this.context.userType ===
+        "http://www.semanticweb.org/semanticweb#Teacher" ? (
+          <ListGroupItem>
+            <Button color="success" tag={Link} to={"/createTopic"}>
+              Create topic
+            </Button>
+          </ListGroupItem>
+        ) : null}
       </ListGroup>
     );
   }

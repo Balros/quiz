@@ -185,6 +185,14 @@ class QuizAssignmentsOverview extends Component {
             </ListGroupItem>
           );
         })}
+        {this.context.userType ===
+        "http://www.semanticweb.org/semanticweb#Teacher" ? (
+          <ListGroupItem>
+            <Button color="success" tag={Link} to={"/newQuizAssignment"}>
+              Create quiz assignment
+            </Button>
+          </ListGroupItem>
+        ) : null}
       </ListGroup>
     );
   }
