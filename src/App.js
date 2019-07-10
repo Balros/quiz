@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import Error from "./components/error";
 import Home from "./components/home";
 import Header from "./components/header/header";
@@ -47,7 +47,7 @@ class App extends Component {
   render() {
     return (
       <UserTypeContext.Provider value={this.state}>
-        <BrowserRouter>
+        <HashRouter>
           <React.Fragment>
             <Header />
             <Container>
@@ -92,7 +92,7 @@ class App extends Component {
               </Row>
             </Container>
           </React.Fragment>
-        </BrowserRouter>
+        </HashRouter>
       </UserTypeContext.Provider>
     );
   }
