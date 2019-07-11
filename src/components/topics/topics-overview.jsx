@@ -70,26 +70,28 @@ function questionsTable(headerText, questions, isTeacher) {
                 {questions
                   ? questions.map(question => {
                       return (
-                        <ListGroupItem
-                          key={question.id}
-                          tag="a"
-                          href={"/question/" + encodeURIComponent(question.id)}
-                          action
-                        >
-                          {"Question name: " + question.title + " "}
-                          {isTeacher ? (
-                            new Date(question.lastSeenByTeacher) <
+                        <ListGroupItem key={question.id}>
+                          <Button
+                            outline
+                            tag={Link}
+                            to={"/question/" + encodeURIComponent(question.id)}
+                            color="primary"
+                          >
+                            {"Question name: " + question.title + " "}
+                            {isTeacher ? (
+                              new Date(question.lastSeenByTeacher) <
+                              new Date(question.lastChange) ? (
+                                <Badge color="danger">Changed</Badge>
+                              ) : (
+                                <Badge color="success">Not Changed</Badge>
+                              )
+                            ) : new Date(question.lastSeenByStudent) <
                             new Date(question.lastChange) ? (
                               <Badge color="danger">Changed</Badge>
                             ) : (
                               <Badge color="success">Not Changed</Badge>
-                            )
-                          ) : new Date(question.lastSeenByStudent) <
-                          new Date(question.lastChange) ? (
-                            <Badge color="danger">Changed</Badge>
-                          ) : (
-                            <Badge color="success">Not Changed</Badge>
-                          )}
+                            )}
+                          </Button>
                         </ListGroupItem>
                       );
                     })

@@ -101,15 +101,17 @@ function AssignmentPreview({
                   {quizzesTaken
                     ? quizzesTaken.map(quizTake => {
                         return (
-                          <ListGroupItem
-                            key={quizTake.id}
-                            tag="a"
-                            href={
-                              "/quizTake/" + encodeURIComponent(quizTake.id)
-                            }
-                            action
-                          >
-                            {"Question name: " + quizTake.author + " "}
+                          <ListGroupItem key={quizTake.id}>
+                            <Button
+                              outline
+                              tag={Link}
+                              to={
+                                "/quizTake/" + encodeURIComponent(quizTake.id)
+                              }
+                              color="primary"
+                            >
+                              {"Question name: " + quizTake.author + " "}
+                            </Button>
                           </ListGroupItem>
                         );
                       })
