@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { UserTypeContext } from "../common/user-type-context";
-import { fetchGetQuizTake } from "../../api-adapter";
+import { Form, Button } from "reactstrap";
+import { fetchGetQuizTake, fetchSubmitQuizTake } from "../../api-adapter";
 import SavedQuestion from "../question/saved-question";
 
 export class QuizTake extends Component {
@@ -13,7 +14,7 @@ export class QuizTake extends Component {
       orderedQuestions: {}
     };
   }
-  generateQuizTake = () => {
+  getQuizTake = () => {
     fetch(fetchGetQuizTake() + encodeURIComponent(this.props.match.params.id), {
       method: "GET",
       headers: {
@@ -24,7 +25,6 @@ export class QuizTake extends Component {
         response
           .json()
           .then(data => {
-            console.log(data);
             let orderedQuestions = {};
             data.quizTake.orderedQuestions.forEach(question => {
               const answers = {};
@@ -36,6 +36,7 @@ export class QuizTake extends Component {
                 };
               });
               orderedQuestions[question.id] = {
+                id: question.id,
                 text: question.questionVersion.text,
                 answers: answers
               };
@@ -66,17 +67,42 @@ export class QuizTake extends Component {
     this.setState({
       orderedQuestions: {
         ...this.state.orderedQuestions,
-        orderedQuestionId: orderedQuestion
+        [orderedQuestionId]: orderedQuestion
       }
     });
   };
+
+  formSubmit = () => {
+    const orderedQuestions = Object.values(this.state.orderedQuestions);
+    orderedQuestions.forEach(orderedQuestion => {
+      orderedQuestion.answers = Object.values(orderedQuestion.answers);
+    });
+    console.log(orderedQuestions);
+    const data = {
+      quizTakeId: this.state.quizTakeId,
+      orderedQuestions: orderedQuestions,
+      token: this.context.userType
+    };
+    fetch(fetchSubmitQuizTake(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.ok) {
+        // this.props.history.push("/quizAssignmentsOverview");
+      }
+    });
+  };
+
   componentDidMount() {
-    this.generateQuizTake();
+    this.getQuizTake();
   }
   render() {
-    console.log(this.state.orderedQuestions);
     return (
-      <React.Fragment>
+      <Form>
         {Object.keys(this.state.orderedQuestions).map(key => {
           const value = this.state.orderedQuestions[key];
           return (
@@ -89,7 +115,10 @@ export class QuizTake extends Component {
             />
           );
         })}
-      </React.Fragment>
+        <Button color="success" onClick={() => this.formSubmit()}>
+          Submit
+        </Button>
+      </Form>
     );
   }
 }
