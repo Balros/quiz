@@ -21,17 +21,16 @@ function AssignmentPreview({
   description,
   startTime,
   endTime,
-  quiz,
-  quizzesTaken,
+  quizTakes,
   isTeacher,
   toggle,
   collapse
 }) {
   let quizTakenReviewed = [];
   let quizTakenNotReviewed = [];
-  if (quizzesTaken) {
-    quizzesTaken.forEach(quiz => {
-      quiz.reviewed
+  if (quizTakes) {
+    quizTakes.forEach(quiz => {
+      quiz.isReviewed
         ? quizTakenReviewed.push(quiz)
         : quizTakenNotReviewed.push(quiz);
     });
@@ -110,7 +109,7 @@ function AssignmentPreview({
                               }
                               color="primary"
                             >
-                              {"Question name: " + quizTake.author + " "}
+                              {"Author: " + quizTake.author}
                             </Button>
                           </ListGroupItem>
                         );
@@ -153,6 +152,7 @@ class QuizAssignmentsOverview extends Component {
         response
           .json()
           .then(data => {
+            console.log(data);
             this.setState({
               assignments: data,
               assignmentCollapse: new Array(data.length).fill(false)
