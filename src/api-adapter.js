@@ -58,6 +58,9 @@ export const fetchQuestionGroups = () => {
 export const fetchGetQuizTake = () => {
   return `${API_URL}/getQuizTake/`;
 };
+export const fetchGenerateQuizTake = () => {
+  return `${API_URL}/generateQuizTake/`;
+};
 export const fetchSubmitQuizTake = () => {
   return `${API_URL}/submitQuizTake`;
 };

@@ -64,7 +64,7 @@ class App extends Component {
                     <Route path="/newQuestion" component={NewQuestion} exact />
                     <Route path="/createTopic" component={NewTopic} />
                     <Route path="/question/:id" component={EditQuestion} />
-                    <Route path="/quiz/:id" component={QuizTake} />
+                    <Route path="/quizTake/:id" component={QuizTake} />
                     <Route
                       path="/editQuestionAssignment/:id"
                       component={CreateQuestionAssignment}

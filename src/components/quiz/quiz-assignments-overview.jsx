@@ -13,116 +13,130 @@ import {
   ListGroupItem
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
-import { fetchQuizAssignments } from "../../api-adapter";
+import { fetchQuizAssignments, fetchGenerateQuizTake } from "../../api-adapter";
 
-function AssignmentPreview({
-  id,
-  title,
-  description,
-  startTime,
-  endTime,
-  quizTakes,
-  isTeacher,
-  toggle,
-  collapse
-}) {
-  let quizTakenReviewed = [];
-  let quizTakenNotReviewed = [];
-  if (quizTakes) {
-    quizTakes.forEach(quiz => {
-      quiz.isReviewed
-        ? quizTakenReviewed.push(quiz)
-        : quizTakenNotReviewed.push(quiz);
-    });
+class AssignmentPreview extends React.Component {
+  constructor(props) {
+    super(props);
   }
-  return (
-    <React.Fragment>
-      <Button color="primary" onClick={toggle}>
-        {title}
-      </Button>
-      <Collapse isOpen={collapse}>
-        <Card>
-          <CardBody>
-            <h4>{title}</h4>
-            <h5>Assignment</h5>
-            {isTeacher ? (
-              <Button
-                color="primary"
-                tag={Link}
-                to={"/newQuizAssignment/" + encodeURIComponent(id)}
-              >
-                Edit Quiz Assignment
-              </Button>
-            ) : null}
-            <div>{description}</div>
-            <div>{startTime}</div>
-            <div>{endTime}</div>
-            <Container>
-              <Row>
-                {quizTakenReviewed
-                  ? questionsTable("Reviewed", quizTakenReviewed)
-                  : null}
-                {quizTakenNotReviewed
-                  ? questionsTable("In progress", quizTakenNotReviewed)
-                  : null}
-              </Row>
-            </Container>
-            {(new Date(startTime) < new Date() &&
-              new Date(endTime) > new Date()) ||
-            isTeacher ? (
-              <Button
-                color="primary"
-                tag={Link}
-                to={"/quiz/" + encodeURIComponent(id)}
-              >
-                Take Quiz
-              </Button>
-            ) : null}
-          </CardBody>
-        </Card>
-      </Collapse>
-    </React.Fragment>
-  );
+  generateQuizTake = quizAssignmentId => {
+    fetch(fetchGenerateQuizTake() + encodeURIComponent(quizAssignmentId), {
+      method: "GET",
+      headers: {
+        token: this.context.userType
+      }
+    }).then(response => {
+      if (response.ok) {
+        response
+          .json()
+          .then(data => {
+            this.props.history.push("/quizTake/" + encodeURIComponent(data));
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    });
+  };
 
-  function questionsTable(headerText, quizzesTaken) {
+  render() {
+    let quizTakenReviewed = [];
+    let quizTakenNotReviewed = [];
+    if (this.props.quizTakes) {
+      this.props.quizTakes.forEach(quiz => {
+        quiz.isReviewed
+          ? quizTakenReviewed.push(quiz)
+          : quizTakenNotReviewed.push(quiz);
+      });
+    }
     return (
-      <Col>
-        <Table bordered>
-          <thead>
-            <tr>
-              <th>{headerText}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <ListGroup>
-                  {quizzesTaken
-                    ? quizzesTaken.map(quizTake => {
-                        return (
-                          <ListGroupItem key={quizTake.id}>
-                            <Button
-                              outline
-                              tag={Link}
-                              to={
-                                "/quizTake/" + encodeURIComponent(quizTake.id)
-                              }
-                              color="primary"
-                            >
-                              {"Author: " + quizTake.author}
-                            </Button>
-                          </ListGroupItem>
-                        );
-                      })
+      <React.Fragment>
+        <Button color="primary" onClick={this.props.toggle}>
+          {this.props.title}
+        </Button>
+        <Collapse isOpen={this.props.collapse}>
+          <Card>
+            <CardBody>
+              <h4>{this.props.title}</h4>
+              <h5>Assignment</h5>
+              {this.props.isTeacher ? (
+                <Button
+                  color="primary"
+                  tag={Link}
+                  to={"/newQuizAssignment/" + encodeURIComponent(this.props.id)}
+                >
+                  Edit Quiz Assignment
+                </Button>
+              ) : null}
+              <div>{this.props.description}</div>
+              <div>{this.props.startTime}</div>
+              <div>{this.props.endTime}</div>
+              <Container>
+                <Row>
+                  {quizTakenReviewed
+                    ? questionsTable("Reviewed", quizTakenReviewed)
                     : null}
-                </ListGroup>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </Col>
+                  {quizTakenNotReviewed
+                    ? questionsTable("In progress", quizTakenNotReviewed)
+                    : null}
+                </Row>
+              </Container>
+              {(new Date(this.props.startTime) < new Date() &&
+                new Date(this.props.endTime) > new Date()) ||
+              this.props.isTeacher ? (
+                <Button
+                  color="primary"
+                  onClick={() => this.generateQuizTake(this.props.id)}
+                >
+                  Take Quiz
+                </Button>
+              ) : null}
+            </CardBody>
+          </Card>
+        </Collapse>
+      </React.Fragment>
     );
   }
+}
+
+function questionsTable(headerText, quizzesTaken) {
+  return (
+    <Col>
+      <Table bordered>
+        <thead>
+          <tr>
+            <th>{headerText}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <ListGroup>
+                {quizzesTaken
+                  ? quizzesTaken.map(quizTake => {
+                      return (
+                        <ListGroupItem key={quizTake.id}>
+                          <Button
+                            outline
+                            tag={Link}
+                            to={
+                              "/getQuizTake/" + encodeURIComponent(quizTake.id)
+                            }
+                            color="primary"
+                          >
+                            {"Author: " + quizTake.author}
+                          </Button>
+                        </ListGroupItem>
+                      );
+                    })
+                  : null}
+              </ListGroup>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </Col>
+  );
 }
 class QuizAssignmentsOverview extends Component {
   constructor(props) {
@@ -183,6 +197,7 @@ class QuizAssignmentsOverview extends Component {
                 }
                 toggle={this.toggle(index)}
                 collapse={this.state.assignmentCollapse[index]}
+                history={this.props.history}
               />
             </ListGroupItem>
           );
@@ -201,5 +216,6 @@ class QuizAssignmentsOverview extends Component {
 }
 
 QuizAssignmentsOverview.contextType = UserTypeContext;
+AssignmentPreview.contextType = UserTypeContext;
 
 export default QuizAssignmentsOverview;

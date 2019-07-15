@@ -9,7 +9,6 @@ export class QuizTake extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      quizAssignmentId: "",
       quizTakeId: "",
       orderedQuestions: {}
     };
@@ -26,7 +25,7 @@ export class QuizTake extends Component {
           .json()
           .then(data => {
             let orderedQuestions = {};
-            data.quizTake.orderedQuestions.forEach(question => {
+            data.orderedQuestions.forEach(question => {
               const answers = {};
               question.questionVersion.answers.forEach(answer => {
                 answers[answer.id] = {
@@ -43,8 +42,7 @@ export class QuizTake extends Component {
             });
 
             this.setState({
-              quizAssignmentId: data.id,
-              quizTakeId: data.quizTake.id,
+              quizTakeId: data.id,
               orderedQuestions: orderedQuestions
             });
           })
@@ -77,7 +75,6 @@ export class QuizTake extends Component {
     orderedQuestions.forEach(orderedQuestion => {
       orderedQuestion.answers = Object.values(orderedQuestion.answers);
     });
-    console.log(orderedQuestions);
     const data = {
       quizTakeId: this.state.quizTakeId,
       orderedQuestions: orderedQuestions,
@@ -92,7 +89,7 @@ export class QuizTake extends Component {
       body: JSON.stringify(data)
     }).then(response => {
       if (response.ok) {
-        // this.props.history.push("/quizAssignmentsOverview");
+        this.props.history.push("/quizAssignmentsOverview");
       }
     });
   };
