@@ -32,7 +32,9 @@ class NewTopic extends Component {
       if (response.ok) {
         response
           .json()
-          .then(data => {})
+          .then(data => {
+            this.props.history.push("/questionGroups");
+          })
           .catch(error => {
             console.log(error);
           });

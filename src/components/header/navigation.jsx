@@ -1,21 +1,21 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Nav, NavItem, NavLink } from "reactstrap";
+import { NavLink as NV } from "react-router-dom";
 
 const Navigation = () => {
   return (
-    <ul>
-      <li>
-        <NavLink to="/">Home</NavLink>
-      </li>
-      <li>
-        <NavLink to="/questionGroups">Topics overview</NavLink>
-      </li>
-      <li>
-        <NavLink to="/quizAssignmentsOverview">
-          Quiz assignments overview
+    <Nav vertical>
+      <NavItem>
+        <NavLink tag={NV} to="/questionGroups">
+          Questions
         </NavLink>
-      </li>
-    </ul>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={NV} to="/quizAssignmentsOverview">
+          Quiz
+        </NavLink>
+      </NavItem>
+    </Nav>
   );
 };
 export default Navigation;

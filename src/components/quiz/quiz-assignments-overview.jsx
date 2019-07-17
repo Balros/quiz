@@ -10,7 +10,8 @@ import {
   Row,
   Col,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  NavLink
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuizAssignments, fetchGenerateQuizTake } from "../../api-adapter";
@@ -117,14 +118,12 @@ function questionsTable(headerText, quizzesTaken) {
                       }
                       return (
                         <ListGroupItem key={quizTake.id}>
-                          <Button
-                            outline
+                          <NavLink
                             tag={Link}
                             to={"/quizTake/" + encodeURIComponent(quizTake.id)}
-                            color="primary"
                           >
                             {text}
-                          </Button>
+                          </NavLink>
                         </ListGroupItem>
                       );
                     })

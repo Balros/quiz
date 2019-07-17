@@ -42,6 +42,7 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.userType !== prevState.userType) {
       localStorage.setItem("userType", this.state.userType);
+      window.location.reload();
     }
   }
   render() {
