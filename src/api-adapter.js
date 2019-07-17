@@ -64,3 +64,6 @@ export const fetchGenerateQuizTake = () => {
 export const fetchSubmitQuizTake = () => {
   return `${API_URL}/submitQuizTake`;
 };
+export const fetchSubmitReview = () => {
+  return `${API_URL}/submitReview`;
+};

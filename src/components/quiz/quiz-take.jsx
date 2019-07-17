@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { UserTypeContext } from "../common/user-type-context";
 import { Form, Button } from "reactstrap";
-import { fetchGetQuizTake, fetchSubmitQuizTake } from "../../api-adapter";
+import {
+  fetchGetQuizTake,
+  fetchSubmitQuizTake,
+  fetchSubmitReview
+} from "../../api-adapter";
 import SavedQuestion from "../question/saved-question";
 
 export class QuizTake extends Component {
@@ -30,7 +34,7 @@ export class QuizTake extends Component {
               question.questionVersion.answers.forEach(answer => {
                 answers[answer.id] = {
                   id: answer.id,
-                  correct: false,
+                  correct: answer.correct ? answer.correct : false,
                   text: answer.text
                 };
               });
@@ -39,11 +43,21 @@ export class QuizTake extends Component {
                 text: question.questionVersion.text,
                 answers: answers
               };
+              if (question.userAnswers) {
+                orderedQuestions[question.id].userAnswers =
+                  question.userAnswers;
+              }
+              if (question.score !== undefined) {
+                orderedQuestions[question.id].score = question.score;
+              }
             });
+            console.log(orderedQuestions);
 
             this.setState({
               quizTakeId: data.id,
-              orderedQuestions: orderedQuestions
+              orderedQuestions: orderedQuestions,
+              isSubmited: data.isSubmited,
+              isReviewed: data.isReviewed
             });
           })
           .catch(error => {
@@ -69,8 +83,22 @@ export class QuizTake extends Component {
       }
     });
   };
+  onScore = (event, orderedQuestionId) => {
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+    const orderedQuestion = this.state.orderedQuestions[orderedQuestionId];
+    orderedQuestion.score = value;
+    this.setState({
+      orderedQuestions: {
+        ...this.state.orderedQuestions,
+        [orderedQuestionId]: orderedQuestion
+      }
+    });
+  };
 
-  formSubmit = () => {
+  formSubmitUserAnswers = () => {
     const orderedQuestions = Object.values(this.state.orderedQuestions);
     orderedQuestions.forEach(orderedQuestion => {
       orderedQuestion.answers = Object.values(orderedQuestion.answers);
@@ -81,6 +109,33 @@ export class QuizTake extends Component {
       token: this.context.userType
     };
     fetch(fetchSubmitQuizTake(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.ok) {
+        this.props.history.push("/quizAssignmentsOverview");
+      }
+    });
+  };
+  formSubmitReview = () => {
+    const orderedQuestionScore = [];
+    const orderedQuestions = Object.values(this.state.orderedQuestions);
+    orderedQuestions.forEach(orderedQuestion => {
+      const obj = {};
+      obj.id = orderedQuestion.id;
+      obj.score = orderedQuestion.score;
+      orderedQuestionScore.push(obj);
+    });
+    const data = {
+      quizTakeId: this.state.quizTakeId,
+      orderedQuestions: orderedQuestionScore,
+      token: this.context.userType
+    };
+    fetch(fetchSubmitReview(), {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -105,19 +160,49 @@ export class QuizTake extends Component {
           return (
             <SavedQuestion
               key={key}
-              isQuizTake={true}
+              isQuizTake={!this.state.isSubmited && !this.state.isReviewed}
+              isPreview={this.state.isSubmited || this.state.isReviewed}
+              isSubmited={this.state.isSubmited}
+              isReviewed={this.state.isReviewed}
+              userAnswers={
+                "userAnswers" in value
+                  ? Object.values(value.userAnswers)
+                  : undefined
+              }
+              score={"score" in value ? value.score : undefined}
               text={value.text}
               answers={Object.values(value.answers)}
               onChange={e => this.onChange(e, key)}
+              onScore={e => this.onScore(e, key)}
+              isTeacher={
+                this.context.userType ===
+                "http://www.semanticweb.org/semanticweb#Teacher"
+                  ? true
+                  : false
+              }
             />
           );
         })}
-        <Button color="success" onClick={() => this.formSubmit()}>
-          Submit
-        </Button>
+        {(this.context.userType !==
+          "http://www.semanticweb.org/semanticweb#Teacher" &&
+          (!this.state.isSubmited && !this.state.isReviewed)) ||
+        (this.context.userType ===
+          "http://www.semanticweb.org/semanticweb#Teacher" &&
+          (!this.state.isSubmited && !this.state.isReviewed)) ? (
+          <Button color="success" onClick={() => this.formSubmitUserAnswers()}>
+            Submit
+          </Button>
+        ) : null}
+        {this.context.userType ===
+          "http://www.semanticweb.org/semanticweb#Teacher" &&
+        (this.state.isSubmited || this.state.isReviewed) ? (
+          <Button color="success" onClick={() => this.formSubmitReview()}>
+            Submit review
+          </Button>
+        ) : null}
       </Form>
     );
   }
 }
-
+QuizTake.contextType = UserTypeContext;
 export default QuizTake;

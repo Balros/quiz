@@ -69,7 +69,9 @@ class SavedQuestion extends Component {
         {this.props.isApprovedAsPrivate ? <div>Approved as Private</div> : null}
         <Card>
           <CardBody>
-            {this.props.isQuizTake ? (
+            {this.props.isQuizTake ||
+            this.props.isSubmited ||
+            this.props.isReviewed ? (
               <CardTitle>{this.props.title}</CardTitle>
             ) : (
               <FormGroup>
@@ -82,7 +84,10 @@ class SavedQuestion extends Component {
                 />
               </FormGroup>
             )}
-            {this.props.isQuizTake && this.props.text ? (
+            {(this.props.isQuizTake ||
+              this.props.isSubmited ||
+              this.props.isReviewed) &&
+            this.props.text ? (
               <CardTitle>{this.props.text.value}</CardTitle>
             ) : (
               <FormGroup>
@@ -113,6 +118,11 @@ class SavedQuestion extends Component {
             ) : null}
             {this.props.answers
               ? this.props.answers.map(answer => {
+                  const userAnswer =
+                    this.props.userAnswers &&
+                    this.props.userAnswers.find(
+                      x => x.predefinedAnswer === answer.id
+                    ).userChoice;
                   return (
                     <FormGroup key={answer.id}>
                       <AnswerComponent
@@ -120,9 +130,16 @@ class SavedQuestion extends Component {
                         isQuizTake={this.props.isQuizTake}
                         onChange={this.props.onChange}
                         correct={answer.correct}
+                        userChoice={userAnswer}
                         value={answer.text.value}
                         isTextEnabled={
                           !this.props.isQuizTake && !this.props.isPreview
+                        }
+                        showAll={
+                          (!this.props.isTeacher && this.props.isReviewed) ||
+                          this.props.isTeacher
+                            ? true
+                            : false
                         }
                         isCheckboxEnabled={!this.props.isPreview}
                       />
@@ -130,6 +147,20 @@ class SavedQuestion extends Component {
                   );
                 })
               : null}
+            {this.props.score !== undefined &&
+            (this.props.isTeacher ||
+              (!this.props.isTeacher && this.props.isReviewed)) ? (
+              <FormGroup>
+                <Label for="score">Score</Label>
+                <Input
+                  type="text"
+                  name="score"
+                  value={this.props.score}
+                  onChange={this.props.onScore}
+                  disabled={!this.props.isTeacher && this.props.isReviewed}
+                />
+              </FormGroup>
+            ) : null}
             {this.props.comments
               ? this.props.comments.map(comment => {
                   return (
@@ -143,7 +174,9 @@ class SavedQuestion extends Component {
                   );
                 })
               : null}
-            {this.props.isQuizTake ? null : (
+            {this.props.isQuizTake ||
+            this.props.isReviewed ||
+            this.props.isSubmited ? null : (
               <FormGroup color="warning">
                 <InputGroup>
                   <Input
@@ -168,7 +201,8 @@ class SavedQuestion extends Component {
                 </InputGroup>
               </FormGroup>
             )}
-            {this.props.isTeacher ? (
+            {this.props.isTeacher &&
+            (!this.props.isSubmited && !this.props.isReviewed) ? (
               <FormGroup color="success">
                 <ButtonDropdown
                   isOpen={this.state.dropdownOpen}

@@ -16,9 +16,6 @@ import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuizAssignments, fetchGenerateQuizTake } from "../../api-adapter";
 
 class AssignmentPreview extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   generateQuizTake = quizAssignmentId => {
     fetch(fetchGenerateQuizTake() + encodeURIComponent(quizAssignmentId), {
       method: "GET",
@@ -114,17 +111,19 @@ function questionsTable(headerText, quizzesTaken) {
               <ListGroup>
                 {quizzesTaken
                   ? quizzesTaken.map(quizTake => {
+                      let text = "Author: " + quizTake.author;
+                      if (quizTake.totalScore) {
+                        text += " Score: " + quizTake.totalScore;
+                      }
                       return (
                         <ListGroupItem key={quizTake.id}>
                           <Button
                             outline
                             tag={Link}
-                            to={
-                              "/getQuizTake/" + encodeURIComponent(quizTake.id)
-                            }
+                            to={"/quizTake/" + encodeURIComponent(quizTake.id)}
                             color="primary"
                           >
-                            {"Author: " + quizTake.author}
+                            {text}
                           </Button>
                         </ListGroupItem>
                       );
