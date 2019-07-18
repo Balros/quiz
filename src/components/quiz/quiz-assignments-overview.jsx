@@ -5,17 +5,17 @@ import {
   CardBody,
   Collapse,
   Button,
-  Table,
-  Container,
-  Row,
-  Col,
   ListGroup,
-  ListGroupItem,
-  NavLink
+  ListGroupItem
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuizAssignments, fetchGenerateQuizTake } from "../../api-adapter";
-
+import InfoTable from "../common/info-table";
+const tablesStyle = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center"
+};
 class AssignmentPreview extends React.Component {
   generateQuizTake = quizAssignmentId => {
     fetch(fetchGenerateQuizTake() + encodeURIComponent(quizAssignmentId), {
@@ -49,7 +49,7 @@ class AssignmentPreview extends React.Component {
     }
     return (
       <React.Fragment>
-        <Button color="primary" onClick={this.props.toggle}>
+        <Button color="link" onClick={this.props.toggle}>
           {this.props.title}
         </Button>
         <Collapse isOpen={this.props.collapse}>
@@ -69,16 +69,22 @@ class AssignmentPreview extends React.Component {
               <div>{this.props.description}</div>
               <div>{this.props.startTime}</div>
               <div>{this.props.endTime}</div>
-              <Container>
-                <Row>
-                  {quizTakenReviewed
-                    ? questionsTable("Reviewed", quizTakenReviewed)
-                    : null}
-                  {quizTakenNotReviewed
-                    ? questionsTable("In progress", quizTakenNotReviewed)
-                    : null}
-                </Row>
-              </Container>
+              <div style={tablesStyle}>
+                {quizTakenReviewed ? (
+                  <InfoTable
+                    headerText={"Scored"}
+                    questions={quizTakenReviewed}
+                    link={"/quizTake/"}
+                  />
+                ) : null}
+                {quizTakenNotReviewed ? (
+                  <InfoTable
+                    headerText={"Submitted"}
+                    questions={quizTakenNotReviewed}
+                    link={"/quizTake/"}
+                  />
+                ) : null}
+              </div>
               {(new Date(this.props.startTime) < new Date() &&
                 new Date(this.props.endTime) > new Date()) ||
               this.props.isTeacher ? (
@@ -97,45 +103,6 @@ class AssignmentPreview extends React.Component {
   }
 }
 
-function questionsTable(headerText, quizzesTaken) {
-  return (
-    <Col>
-      <Table bordered>
-        <thead>
-          <tr>
-            <th>{headerText}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <ListGroup>
-                {quizzesTaken
-                  ? quizzesTaken.map(quizTake => {
-                      let text = "Author: " + quizTake.author;
-                      if (quizTake.totalScore) {
-                        text += " Score: " + quizTake.totalScore;
-                      }
-                      return (
-                        <ListGroupItem key={quizTake.id}>
-                          <NavLink
-                            tag={Link}
-                            to={"/quizTake/" + encodeURIComponent(quizTake.id)}
-                          >
-                            {text}
-                          </NavLink>
-                        </ListGroupItem>
-                      );
-                    })
-                  : null}
-              </ListGroup>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    </Col>
-  );
-}
 class QuizAssignmentsOverview extends Component {
   constructor(props) {
     super(props);
@@ -164,7 +131,6 @@ class QuizAssignmentsOverview extends Component {
         response
           .json()
           .then(data => {
-            console.log(data);
             this.setState({
               assignments: data,
               assignmentCollapse: new Array(data.length).fill(false)

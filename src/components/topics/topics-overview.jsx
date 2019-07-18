@@ -3,105 +3,47 @@ import { Link } from "react-router-dom";
 import {
   Card,
   CardBody,
+  CardLink,
+  CardSubtitle,
   Collapse,
   Button,
-  Table,
-  Container,
-  Row,
-  Col,
-  Badge,
   ListGroup,
   ListGroupItem
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuestionGroups } from "../../api-adapter";
-
+import InfoTable from "../common/info-table";
+const tablesStyle = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center"
+};
 function AssignmentPreview({
   id,
   description,
   startTime,
   endTime,
-  questions,
   isTeacher,
   topic
 }) {
   return (
     <React.Fragment>
-      <h5>Assignment</h5>
+      <CardSubtitle tag={"h4"} className={"h6"}>
+        Assignment
+      </CardSubtitle>
+      <div>{description}</div>
+      <div>{startTime}</div>
+      <div>{endTime}</div>
       {isTeacher ? (
         <Button
           color="primary"
           tag={Link}
           to={"/editQuestionAssignment/" + encodeURIComponent(id)}
         >
-          Edit Question Assignment
-        </Button>
-      ) : null}
-      <div>{description}</div>
-      <div>{startTime}</div>
-      <div>{endTime}</div>
-
-      {(new Date(startTime) < new Date() && new Date(endTime) > new Date()) ||
-      isTeacher ? (
-        <Button
-          color="primary"
-          tag={Link}
-          to={"/newQuestion/" + encodeURIComponent(topic)}
-        >
-          Create Question
+          Edit Assignment
         </Button>
       ) : null}
     </React.Fragment>
-  );
-}
-function questionsTable(headerText, questions, isTeacher) {
-  return (
-    <Col>
-      <Table bordered>
-        <thead>
-          <tr>
-            <th>{headerText}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <ListGroup>
-                {questions
-                  ? questions.map(question => {
-                      return (
-                        <ListGroupItem key={question.id}>
-                          <Button
-                            outline
-                            tag={Link}
-                            to={"/question/" + encodeURIComponent(question.id)}
-                            color="primary"
-                          >
-                            {"Question name: " + question.title + " "}
-                            {isTeacher ? (
-                              new Date(question.lastSeenByTeacher) <
-                              new Date(question.lastChange) ? (
-                                <Badge color="danger">Changed</Badge>
-                              ) : (
-                                <Badge color="success">Not Changed</Badge>
-                              )
-                            ) : new Date(question.lastSeenByStudent) <
-                            new Date(question.lastChange) ? (
-                              <Badge color="danger">Changed</Badge>
-                            ) : (
-                              <Badge color="success">Not Changed</Badge>
-                            )}
-                          </Button>
-                        </ListGroupItem>
-                      );
-                    })
-                  : null}
-              </ListGroup>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    </Col>
   );
 }
 function TopicPreview({
@@ -125,13 +67,15 @@ function TopicPreview({
   }
   return (
     <React.Fragment>
-      <Button color="primary" onClick={toggle}>
-        {name}
-      </Button>
-      <Collapse isOpen={collapse}>
-        <Card>
-          <CardBody>
-            <h4>{name}</h4>
+      <Card>
+        <CardBody>
+          <h3>{name}</h3>
+          <CardLink href="#" onClick={toggle}>
+            expand
+          </CardLink>
+        </CardBody>
+        <Collapse isOpen={collapse}>
+          <CardBody className="pt-0">
             {!assignment && isTeacher ? (
               <Button
                 color="primary"
@@ -151,18 +95,41 @@ function TopicPreview({
               />
             ) : null}
           </CardBody>
-        </Card>
-        <Container>
-          <Row>
-            {questionsApproved
-              ? questionsTable("Approved", questionsApproved, isTeacher)
-              : null}
-            {questionsNotApproved
-              ? questionsTable("In progress", questionsNotApproved, isTeacher)
-              : null}
-          </Row>
-        </Container>
-      </Collapse>
+          <CardBody>
+            <h4>Questions</h4>
+            <div style={tablesStyle}>
+              {questionsNotApproved ? (
+                <InfoTable
+                  headerText={"In progress"}
+                  questions={questionsNotApproved}
+                  isTeacher={isTeacher}
+                  link={"/question/"}
+                />
+              ) : null}
+              {questionsApproved ? (
+                <InfoTable
+                  headerText={"Approved"}
+                  questions={questionsApproved}
+                  isTeacher={isTeacher}
+                  link={"/question/"}
+                />
+              ) : null}
+            </div>
+            {(assignment &&
+              (new Date(assignment.startTime) < new Date() &&
+                new Date(assignment.endTime) > new Date())) ||
+            isTeacher ? (
+              <Button
+                color="primary"
+                tag={Link}
+                to={"/newQuestion/" + encodeURIComponent(id)}
+              >
+                Create Question
+              </Button>
+            ) : null}
+          </CardBody>
+        </Collapse>
+      </Card>
     </React.Fragment>
   );
 }
@@ -175,6 +142,7 @@ class TopicsOverview extends Component {
     };
   }
   toggle = index => e => {
+    e.preventDefault();
     let updatedTopicCollapse = this.state.topicCollapse;
     updatedTopicCollapse[index] = !updatedTopicCollapse[index];
     this.setState({ topicCollapse: updatedTopicCollapse });
@@ -213,33 +181,36 @@ class TopicsOverview extends Component {
   }
   render() {
     return (
-      <ListGroup flush>
-        {this.state.topics.map((topic, index) => {
-          return (
-            <ListGroupItem key={topic.id}>
-              <TopicPreview
-                {...topic}
-                isTeacher={
-                  this.context.userType ===
-                  "http://www.semanticweb.org/semanticweb#Teacher"
-                    ? true
-                    : false
-                }
-                toggle={this.toggle(index)}
-                collapse={this.state.topicCollapse[index]}
-              />
+      <React.Fragment>
+        <h3>Questions by topic</h3>
+        <ListGroup flush>
+          {this.state.topics.map((topic, index) => {
+            return (
+              <ListGroupItem key={topic.id}>
+                <TopicPreview
+                  {...topic}
+                  isTeacher={
+                    this.context.userType ===
+                    "http://www.semanticweb.org/semanticweb#Teacher"
+                      ? true
+                      : false
+                  }
+                  toggle={this.toggle(index)}
+                  collapse={this.state.topicCollapse[index]}
+                />
+              </ListGroupItem>
+            );
+          })}
+          {this.context.userType ===
+          "http://www.semanticweb.org/semanticweb#Teacher" ? (
+            <ListGroupItem>
+              <Button color="success" tag={Link} to={"/createTopic"}>
+                Create topic
+              </Button>
             </ListGroupItem>
-          );
-        })}
-        {this.context.userType ===
-        "http://www.semanticweb.org/semanticweb#Teacher" ? (
-          <ListGroupItem>
-            <Button color="success" tag={Link} to={"/createTopic"}>
-              Create topic
-            </Button>
-          </ListGroupItem>
-        ) : null}
-      </ListGroup>
+          ) : null}
+        </ListGroup>
+      </React.Fragment>
     );
   }
 }

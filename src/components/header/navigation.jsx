@@ -12,7 +12,7 @@ const Navigation = () => {
       </NavItem>
       <NavItem>
         <NavLink tag={NV} to="/quizAssignmentsOverview">
-          Quiz
+          Quizzes
         </NavLink>
       </NavItem>
     </Nav>
