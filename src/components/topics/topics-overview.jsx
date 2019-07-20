@@ -5,6 +5,7 @@ import {
   CardBody,
   CardLink,
   CardSubtitle,
+  CardText,
   Collapse,
   Button,
   ListGroup,
@@ -22,9 +23,9 @@ function AssignmentPreview({ id, description, startTime, endTime, isTeacher }) {
       <CardSubtitle tag={"h3"} className={"h4"}>
         Assignment
       </CardSubtitle>
-      <div>{description}</div>
-      <div>{startTime}</div>
-      <div>{endTime}</div>
+      <CardText>{description}</CardText>
+      <CardText>{new Date(startTime).toLocaleDateString()}</CardText>
+      <CardText>{new Date(endTime).toLocaleDateString()}</CardText>
       {isTeacher ? (
         <Button
           color="primary"

@@ -64,8 +64,12 @@ class AssignmentPreview extends React.Component {
                 Assignment
               </CardSubtitle>
               <CardText>{this.props.description}</CardText>
-              <div>{new Date(this.props.startTime).toLocaleDateString()}</div>
-              <div>{new Date(this.props.endTime).toLocaleDateString()}</div>
+              <CardText>
+                {new Date(this.props.startTime).toLocaleDateString()}
+              </CardText>
+              <CardText>
+                {new Date(this.props.endTime).toLocaleDateString()}
+              </CardText>
               {this.props.isTeacher ? (
                 <Button
                   color="primary"
