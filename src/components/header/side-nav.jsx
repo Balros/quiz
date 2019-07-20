@@ -2,7 +2,7 @@ import React from "react";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { NavLink as NV } from "react-router-dom";
 
-const Navigation = () => {
+const SideNav = () => {
   return (
     <Nav vertical>
       <NavItem>
@@ -18,4 +18,4 @@ const Navigation = () => {
     </Nav>
   );
 };
-export default Navigation;
+export default SideNav;

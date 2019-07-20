@@ -2,20 +2,22 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
+  CardSubtitle,
   CardBody,
+  CardLink,
+  CardText,
   Collapse,
   Button,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Container,
+  Row,
+  Col
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuizAssignments, fetchGenerateQuizTake } from "../../api-adapter";
-import InfoTable from "../common/info-table";
-const tablesStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center"
-};
+import QuizTakeTable from "./quiz-take-table";
+
 class AssignmentPreview extends React.Component {
   generateQuizTake = quizAssignmentId => {
     fetch(fetchGenerateQuizTake() + encodeURIComponent(quizAssignmentId), {
@@ -49,42 +51,60 @@ class AssignmentPreview extends React.Component {
     }
     return (
       <React.Fragment>
-        <Button color="link" onClick={this.props.toggle}>
-          {this.props.title}
-        </Button>
-        <Collapse isOpen={this.props.collapse}>
-          <Card>
-            <CardBody>
-              <h4>{this.props.title}</h4>
-              <h5>Assignment</h5>
+        <Card>
+          <CardBody>
+            <h2 className={"h3"}>{this.props.title}</h2>
+            <CardLink href="#" onClick={this.props.toggle}>
+              expand
+            </CardLink>
+          </CardBody>
+          <Collapse isOpen={this.props.collapse}>
+            <CardBody className="pt-0">
+              <CardSubtitle tag={"h3"} className={"h4"}>
+                Assignment
+              </CardSubtitle>
+              <CardText>{this.props.description}</CardText>
+              <div>{new Date(this.props.startTime).toLocaleDateString()}</div>
+              <div>{new Date(this.props.endTime).toLocaleDateString()}</div>
               {this.props.isTeacher ? (
                 <Button
                   color="primary"
                   tag={Link}
                   to={"/newQuizAssignment/" + encodeURIComponent(this.props.id)}
                 >
-                  Edit Quiz Assignment
+                  Edit assignment
                 </Button>
               ) : null}
-              <div>{this.props.description}</div>
-              <div>{this.props.startTime}</div>
-              <div>{this.props.endTime}</div>
-              <div style={tablesStyle}>
-                {quizTakenReviewed ? (
-                  <InfoTable
-                    headerText={"Scored"}
-                    questions={quizTakenReviewed}
-                    link={"/quizTake/"}
-                  />
-                ) : null}
-                {quizTakenNotReviewed ? (
-                  <InfoTable
-                    headerText={"Submitted"}
-                    questions={quizTakenNotReviewed}
-                    link={"/quizTake/"}
-                  />
-                ) : null}
-              </div>
+            </CardBody>
+            <CardBody>
+              <CardSubtitle tag={"h3"} className={"h4"}>
+                Quiz takes
+              </CardSubtitle>
+              <Container>
+                <Row>
+                  {quizTakenNotReviewed ? (
+                    <Col xs="12" md="6">
+                      <QuizTakeTable
+                        headerText={"Submitted"}
+                        authorHeader={"Author"}
+                        questions={quizTakenNotReviewed}
+                        link={"/quizTake/"}
+                      />
+                    </Col>
+                  ) : null}
+                  {quizTakenReviewed ? (
+                    <Col xs="12" md="6">
+                      <QuizTakeTable
+                        headerText={"Scored"}
+                        authorHeader={"Author"}
+                        scoreHeader={"Score"}
+                        questions={quizTakenReviewed}
+                        link={"/quizTake/"}
+                      />
+                    </Col>
+                  ) : null}
+                </Row>
+              </Container>
               {(new Date(this.props.startTime) < new Date() &&
                 new Date(this.props.endTime) > new Date()) ||
               this.props.isTeacher ? (
@@ -96,8 +116,8 @@ class AssignmentPreview extends React.Component {
                 </Button>
               ) : null}
             </CardBody>
-          </Card>
-        </Collapse>
+          </Collapse>
+        </Card>
       </React.Fragment>
     );
   }
@@ -112,6 +132,7 @@ class QuizAssignmentsOverview extends Component {
     };
   }
   toggle = index => e => {
+    e.preventDefault();
     let updatedAssignmentCollapse = this.state.assignmentCollapse;
     updatedAssignmentCollapse[index] = !updatedAssignmentCollapse[index];
     this.setState({ assignmentCollapse: updatedAssignmentCollapse });
@@ -147,34 +168,37 @@ class QuizAssignmentsOverview extends Component {
   }
   render() {
     return (
-      <ListGroup flush>
-        {this.state.assignments.map((assignment, index) => {
-          return (
-            <ListGroupItem key={assignment.id}>
-              <AssignmentPreview
-                {...assignment}
-                isTeacher={
-                  this.context.userType ===
-                  "http://www.semanticweb.org/semanticweb#Teacher"
-                    ? true
-                    : false
-                }
-                toggle={this.toggle(index)}
-                collapse={this.state.assignmentCollapse[index]}
-                history={this.props.history}
-              />
+      <React.Fragment>
+        <h1>Quizzes</h1>
+        <ListGroup flush>
+          {this.state.assignments.map((assignment, index) => {
+            return (
+              <ListGroupItem key={assignment.id}>
+                <AssignmentPreview
+                  {...assignment}
+                  isTeacher={
+                    this.context.userType ===
+                    "http://www.semanticweb.org/semanticweb#Teacher"
+                      ? true
+                      : false
+                  }
+                  toggle={this.toggle(index)}
+                  collapse={this.state.assignmentCollapse[index]}
+                  history={this.props.history}
+                />
+              </ListGroupItem>
+            );
+          })}
+          {this.context.userType ===
+          "http://www.semanticweb.org/semanticweb#Teacher" ? (
+            <ListGroupItem>
+              <Button color="success" tag={Link} to={"/newQuizAssignment"}>
+                Create quiz assignment
+              </Button>
             </ListGroupItem>
-          );
-        })}
-        {this.context.userType ===
-        "http://www.semanticweb.org/semanticweb#Teacher" ? (
-          <ListGroupItem>
-            <Button color="success" tag={Link} to={"/newQuizAssignment"}>
-              Create quiz assignment
-            </Button>
-          </ListGroupItem>
-        ) : null}
-      </ListGroup>
+          ) : null}
+        </ListGroup>
+      </React.Fragment>
     );
   }
 }

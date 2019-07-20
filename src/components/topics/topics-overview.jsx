@@ -8,27 +8,18 @@ import {
   Collapse,
   Button,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Container,
+  Row,
+  Col
 } from "reactstrap";
 import { UserTypeContext } from "../common/user-type-context";
 import { fetchQuestionGroups } from "../../api-adapter";
-import InfoTable from "../common/info-table";
-const tablesStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center"
-};
-function AssignmentPreview({
-  id,
-  description,
-  startTime,
-  endTime,
-  isTeacher,
-  topic
-}) {
+import InfoTable from "./info-table";
+function AssignmentPreview({ id, description, startTime, endTime, isTeacher }) {
   return (
     <React.Fragment>
-      <CardSubtitle tag={"h4"} className={"h6"}>
+      <CardSubtitle tag={"h3"} className={"h4"}>
         Assignment
       </CardSubtitle>
       <div>{description}</div>
@@ -40,7 +31,7 @@ function AssignmentPreview({
           tag={Link}
           to={"/editQuestionAssignment/" + encodeURIComponent(id)}
         >
-          Edit Assignment
+          Edit assignment
         </Button>
       ) : null}
     </React.Fragment>
@@ -69,7 +60,7 @@ function TopicPreview({
     <React.Fragment>
       <Card>
         <CardBody>
-          <h3>{name}</h3>
+          <h2 className={"h3"}>{name}</h2>
           <CardLink href="#" onClick={toggle}>
             expand
           </CardLink>
@@ -96,25 +87,33 @@ function TopicPreview({
             ) : null}
           </CardBody>
           <CardBody>
-            <h4>Questions</h4>
-            <div style={tablesStyle}>
-              {questionsNotApproved ? (
-                <InfoTable
-                  headerText={"In progress"}
-                  questions={questionsNotApproved}
-                  isTeacher={isTeacher}
-                  link={"/question/"}
-                />
-              ) : null}
-              {questionsApproved ? (
-                <InfoTable
-                  headerText={"Approved"}
-                  questions={questionsApproved}
-                  isTeacher={isTeacher}
-                  link={"/question/"}
-                />
-              ) : null}
-            </div>
+            <CardSubtitle tag={"h3"} className={"h4"}>
+              Questions
+            </CardSubtitle>
+            <Container>
+              <Row>
+                {questionsNotApproved ? (
+                  <Col xs="12" md="6">
+                    <InfoTable
+                      headerText={"In progress"}
+                      questions={questionsNotApproved}
+                      isTeacher={isTeacher}
+                      link={"/question/"}
+                    />
+                  </Col>
+                ) : null}
+                {questionsApproved ? (
+                  <Col xs="12" md="6">
+                    <InfoTable
+                      headerText={"Approved"}
+                      questions={questionsApproved}
+                      isTeacher={isTeacher}
+                      link={"/question/"}
+                    />
+                  </Col>
+                ) : null}
+              </Row>
+            </Container>
             {(assignment &&
               (new Date(assignment.startTime) < new Date() &&
                 new Date(assignment.endTime) > new Date())) ||
@@ -182,7 +181,7 @@ class TopicsOverview extends Component {
   render() {
     return (
       <React.Fragment>
-        <h3>Questions by topic</h3>
+        <h1>Questions by topic</h1>
         <ListGroup flush>
           {this.state.topics.map((topic, index) => {
             return (
