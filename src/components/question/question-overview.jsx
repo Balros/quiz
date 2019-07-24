@@ -141,6 +141,7 @@ class QuestionOverview extends Component {
         : null;
     return (
       <React.Fragment>
+        <h1>{this.state.title}</h1>
         <Button onClick={() => this.setState({ isEdit: !this.state.isEdit })}>
           Edit question
         </Button>

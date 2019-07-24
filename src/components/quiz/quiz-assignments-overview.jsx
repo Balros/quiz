@@ -8,9 +8,6 @@ import {
   CardText,
   Collapse,
   Button,
-  ListGroup,
-  ListGroupItem,
-  Container,
   Row,
   Col
 } from "reactstrap";
@@ -51,77 +48,75 @@ class AssignmentPreview extends React.Component {
     }
     return (
       <React.Fragment>
-        <Card>
-          <CardBody>
-            <h2 className={"h3"}>{this.props.title}</h2>
-            <CardLink href="#" onClick={this.props.toggle}>
-              expand
-            </CardLink>
+        <CardBody>
+          <h2 className={"h3"}>{this.props.title}</h2>
+          <CardLink href="#" onClick={this.props.toggle}>
+            expand
+          </CardLink>
+        </CardBody>
+        <Collapse isOpen={this.props.collapse}>
+          <CardBody className="pt-0">
+            <CardSubtitle tag={"h3"} className={"h4"}>
+              Assignment
+            </CardSubtitle>
+            <CardText>{this.props.description}</CardText>
+            <CardText>
+              Start date:
+              {" " + new Date(this.props.startTime).toLocaleDateString()}
+            </CardText>
+            <CardText>
+              End date:
+              {" " + new Date(this.props.endTime).toLocaleDateString()}
+            </CardText>
+            {this.props.isTeacher ? (
+              <Button
+                color="primary"
+                tag={Link}
+                to={"/newQuizAssignment/" + encodeURIComponent(this.props.id)}
+              >
+                Edit assignment
+              </Button>
+            ) : null}
           </CardBody>
-          <Collapse isOpen={this.props.collapse}>
-            <CardBody className="pt-0">
-              <CardSubtitle tag={"h3"} className={"h4"}>
-                Assignment
-              </CardSubtitle>
-              <CardText>{this.props.description}</CardText>
-              <CardText>
-                {new Date(this.props.startTime).toLocaleDateString()}
-              </CardText>
-              <CardText>
-                {new Date(this.props.endTime).toLocaleDateString()}
-              </CardText>
-              {this.props.isTeacher ? (
-                <Button
-                  color="primary"
-                  tag={Link}
-                  to={"/newQuizAssignment/" + encodeURIComponent(this.props.id)}
-                >
-                  Edit assignment
-                </Button>
+          <CardBody>
+            <CardSubtitle tag={"h3"} className={"h4"}>
+              Quiz takes
+            </CardSubtitle>
+            <Row>
+              {quizTakenNotReviewed ? (
+                <Col xs="12" md="6">
+                  <QuizTakeTable
+                    headerText={"Submitted"}
+                    authorHeader={"Author"}
+                    questions={quizTakenNotReviewed}
+                    link={"/quizTake/"}
+                  />
+                </Col>
               ) : null}
-            </CardBody>
-            <CardBody>
-              <CardSubtitle tag={"h3"} className={"h4"}>
-                Quiz takes
-              </CardSubtitle>
-              <Container>
-                <Row>
-                  {quizTakenNotReviewed ? (
-                    <Col xs="12" md="6">
-                      <QuizTakeTable
-                        headerText={"Submitted"}
-                        authorHeader={"Author"}
-                        questions={quizTakenNotReviewed}
-                        link={"/quizTake/"}
-                      />
-                    </Col>
-                  ) : null}
-                  {quizTakenReviewed ? (
-                    <Col xs="12" md="6">
-                      <QuizTakeTable
-                        headerText={"Scored"}
-                        authorHeader={"Author"}
-                        scoreHeader={"Score"}
-                        questions={quizTakenReviewed}
-                        link={"/quizTake/"}
-                      />
-                    </Col>
-                  ) : null}
-                </Row>
-              </Container>
-              {(new Date(this.props.startTime) < new Date() &&
-                new Date(this.props.endTime) > new Date()) ||
-              this.props.isTeacher ? (
-                <Button
-                  color="primary"
-                  onClick={() => this.generateQuizTake(this.props.id)}
-                >
-                  Take Quiz
-                </Button>
+              {quizTakenReviewed ? (
+                <Col xs="12" md="6">
+                  <QuizTakeTable
+                    headerText={"Scored"}
+                    authorHeader={"Author"}
+                    scoreHeader={"Score"}
+                    questions={quizTakenReviewed}
+                    link={"/quizTake/"}
+                  />
+                </Col>
               ) : null}
-            </CardBody>
-          </Collapse>
-        </Card>
+            </Row>
+            {(new Date(this.props.startTime) < new Date() &&
+              new Date(this.props.endTime) > new Date()) ||
+            this.props.isTeacher ? (
+              <Button
+                color="primary"
+                onClick={() => this.generateQuizTake(this.props.id)}
+              >
+                Take Quiz
+              </Button>
+            ) : null}
+          </CardBody>
+        </Collapse>
       </React.Fragment>
     );
   }
@@ -174,10 +169,10 @@ class QuizAssignmentsOverview extends Component {
     return (
       <React.Fragment>
         <h1>Quizzes</h1>
-        <ListGroup flush>
+        <div>
           {this.state.assignments.map((assignment, index) => {
             return (
-              <ListGroupItem key={assignment.id}>
+              <Card tag={"article"} key={assignment.id}>
                 <AssignmentPreview
                   {...assignment}
                   isTeacher={
@@ -190,18 +185,16 @@ class QuizAssignmentsOverview extends Component {
                   collapse={this.state.assignmentCollapse[index]}
                   history={this.props.history}
                 />
-              </ListGroupItem>
+              </Card>
             );
           })}
           {this.context.userType ===
           "http://www.semanticweb.org/semanticweb#Teacher" ? (
-            <ListGroupItem>
-              <Button color="success" tag={Link} to={"/newQuizAssignment"}>
-                Create quiz assignment
-              </Button>
-            </ListGroupItem>
+            <Button color="success" tag={Link} to={"/newQuizAssignment"}>
+              Create quiz assignment
+            </Button>
           ) : null}
-        </ListGroup>
+        </div>
       </React.Fragment>
     );
   }

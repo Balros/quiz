@@ -40,6 +40,7 @@ class App extends Component {
     });
   };
   componentDidUpdate(prevProps, prevState) {
+    document.title = "Quizzes & Questions";
     if (this.state.userType !== prevState.userType) {
       localStorage.setItem("userType", this.state.userType);
       window.location.reload();

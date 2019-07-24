@@ -65,10 +65,14 @@ class SavedQuestion extends Component {
   render() {
     return (
       <div className="question">
-        {this.props.isApprovedAsPublic ? <div>Approved as Public</div> : null}
-        {this.props.isApprovedAsPrivate ? <div>Approved as Private</div> : null}
         <Card>
           <CardBody>
+            {this.props.isApprovedAsPublic ? (
+              <div>Approved as Public</div>
+            ) : null}
+            {this.props.isApprovedAsPrivate ? (
+              <div>Approved as Private</div>
+            ) : null}
             {this.props.isQuizTake ||
             this.props.isSubmited ||
             this.props.isReviewed ? (
@@ -116,37 +120,40 @@ class SavedQuestion extends Component {
                 </Input>
               </FormGroup>
             ) : null}
-            {this.props.answers
-              ? this.props.answers.map(answer => {
-                  const userAnswer =
-                    this.props.userAnswers &&
-                    this.props.userAnswers.find(
-                      x => x.predefinedAnswer === answer.id
-                    ).userChoice;
-                  return (
-                    <FormGroup key={answer.id}>
-                      <AnswerComponent
-                        checkboxName={answer.id}
-                        isQuizTake={this.props.isQuizTake}
-                        onChange={this.props.onChange}
-                        correct={answer.correct}
-                        userChoice={userAnswer}
-                        value={answer.text.value}
-                        isTextEnabled={
-                          !this.props.isQuizTake && !this.props.isPreview
-                        }
-                        showAll={
-                          (!this.props.isTeacher && this.props.isReviewed) ||
-                          this.props.isTeacher
-                            ? true
-                            : false
-                        }
-                        isCheckboxEnabled={!this.props.isPreview}
-                      />
-                    </FormGroup>
-                  );
-                })
-              : null}
+            <FormGroup tag={"fieldset"}>
+              <legend>Answers</legend>
+              {this.props.answers
+                ? this.props.answers.map(answer => {
+                    const userAnswer =
+                      this.props.userAnswers &&
+                      this.props.userAnswers.find(
+                        x => x.predefinedAnswer === answer.id
+                      ).userChoice;
+                    return (
+                      <FormGroup key={answer.id}>
+                        <AnswerComponent
+                          checkboxName={answer.id}
+                          isQuizTake={this.props.isQuizTake}
+                          onChange={this.props.onChange}
+                          correct={answer.correct}
+                          userChoice={userAnswer}
+                          value={answer.text.value}
+                          isTextEnabled={
+                            !this.props.isQuizTake && !this.props.isPreview
+                          }
+                          showAll={
+                            (!this.props.isTeacher && this.props.isReviewed) ||
+                            this.props.isTeacher
+                              ? true
+                              : false
+                          }
+                          isCheckboxEnabled={!this.props.isPreview}
+                        />
+                      </FormGroup>
+                    );
+                  })
+                : null}
+            </FormGroup>
             {this.props.score !== undefined &&
             (this.props.isTeacher ||
               (!this.props.isTeacher && this.props.isReviewed)) ? (

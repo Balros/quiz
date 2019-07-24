@@ -8,7 +8,9 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledDropdown
+  UncontrolledDropdown,
+  NavItem,
+  NavLink
 } from "reactstrap";
 import { UserTypeContext, userTypes } from "../common/user-type-context";
 
@@ -45,6 +47,9 @@ class TopNav extends Component {
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
+            <NavItem>
+              <NavLink href="/">Quizzes & Questions</NavLink>
+            </NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
                 {userTypes[this.context.userType]}

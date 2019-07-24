@@ -8,9 +8,6 @@ import {
   CardText,
   Collapse,
   Button,
-  ListGroup,
-  ListGroupItem,
-  Container,
   Row,
   Col
 } from "reactstrap";
@@ -24,8 +21,14 @@ function AssignmentPreview({ id, description, startTime, endTime, isTeacher }) {
         Assignment
       </CardSubtitle>
       <CardText>{description}</CardText>
-      <CardText>{new Date(startTime).toLocaleDateString()}</CardText>
-      <CardText>{new Date(endTime).toLocaleDateString()}</CardText>
+      <CardText>
+        Start date:
+        {" " + new Date(startTime).toLocaleDateString()}
+      </CardText>
+      <CardText>
+        End date:
+        {" " + new Date(endTime).toLocaleDateString()}
+      </CardText>
       {isTeacher ? (
         <Button
           color="primary"
@@ -59,77 +62,73 @@ function TopicPreview({
   }
   return (
     <React.Fragment>
-      <Card>
-        <CardBody>
-          <h2 className={"h3"}>{name}</h2>
-          <CardLink href="#" onClick={toggle}>
-            expand
-          </CardLink>
+      <CardBody>
+        <h2 className={"h3"}>{name}</h2>
+        <CardLink href="#" onClick={toggle}>
+          expand
+        </CardLink>
+      </CardBody>
+      <Collapse isOpen={collapse}>
+        <CardBody className="pt-0">
+          {!assignment && isTeacher ? (
+            <Button
+              color="primary"
+              tag={Link}
+              to={{
+                pathname: "/newQuestionAssignment",
+                state: { topic: id }
+              }}
+            >
+              Create Question Assignment
+            </Button>
+          ) : assignment ? (
+            <AssignmentPreview
+              {...assignment}
+              isTeacher={isTeacher}
+              topic={id}
+            />
+          ) : null}
         </CardBody>
-        <Collapse isOpen={collapse}>
-          <CardBody className="pt-0">
-            {!assignment && isTeacher ? (
-              <Button
-                color="primary"
-                tag={Link}
-                to={{
-                  pathname: "/newQuestionAssignment",
-                  state: { topic: id }
-                }}
-              >
-                Create Question Assignment
-              </Button>
-            ) : assignment ? (
-              <AssignmentPreview
-                {...assignment}
-                isTeacher={isTeacher}
-                topic={id}
-              />
+        <CardBody>
+          <CardSubtitle tag={"h3"} className={"h4"}>
+            Questions
+          </CardSubtitle>
+          <Row>
+            {questionsNotApproved ? (
+              <Col xs="12" md="6">
+                <InfoTable
+                  headerText={"In progress"}
+                  questions={questionsNotApproved}
+                  isTeacher={isTeacher}
+                  link={"/question/"}
+                />
+              </Col>
             ) : null}
-          </CardBody>
-          <CardBody>
-            <CardSubtitle tag={"h3"} className={"h4"}>
-              Questions
-            </CardSubtitle>
-            <Container>
-              <Row>
-                {questionsNotApproved ? (
-                  <Col xs="12" md="6">
-                    <InfoTable
-                      headerText={"In progress"}
-                      questions={questionsNotApproved}
-                      isTeacher={isTeacher}
-                      link={"/question/"}
-                    />
-                  </Col>
-                ) : null}
-                {questionsApproved ? (
-                  <Col xs="12" md="6">
-                    <InfoTable
-                      headerText={"Approved"}
-                      questions={questionsApproved}
-                      isTeacher={isTeacher}
-                      link={"/question/"}
-                    />
-                  </Col>
-                ) : null}
-              </Row>
-            </Container>
-            {(assignment &&
-              (new Date(assignment.startTime) < new Date() &&
-                new Date(assignment.endTime) > new Date())) ||
-            isTeacher ? (
-              <Button
-                color="primary"
-                tag={Link}
-                to={"/newQuestion/" + encodeURIComponent(id)}
-              >
-                Create Question
-              </Button>
+            {questionsApproved ? (
+              <Col xs="12" md="6">
+                <InfoTable
+                  headerText={"Approved"}
+                  questions={questionsApproved}
+                  isTeacher={isTeacher}
+                  link={"/question/"}
+                />
+              </Col>
             ) : null}
-          </CardBody>
-        </Collapse>
-      </Card>
+          </Row>
+          {(assignment &&
+            (new Date(assignment.startTime) < new Date() &&
+              new Date(assignment.endTime) > new Date())) ||
+          isTeacher ? (
+            <Button
+              color="primary"
+              tag={Link}
+              to={"/newQuestion/" + encodeURIComponent(id)}
+            >
+              Create Question
+            </Button>
+          ) : null}
+        </CardBody>
+      </Collapse>
     </React.Fragment>
   );
 }
@@ -183,10 +182,10 @@ class TopicsOverview extends Component {
     return (
       <React.Fragment>
         <h1>Questions by topic</h1>
-        <ListGroup flush>
+        <div>
           {this.state.topics.map((topic, index) => {
             return (
-              <ListGroupItem key={topic.id}>
+              <Card tag={"article"} key={topic.id}>
                 <TopicPreview
                   {...topic}
                   isTeacher={
@@ -198,18 +197,16 @@ class TopicsOverview extends Component {
                   toggle={this.toggle(index)}
                   collapse={this.state.topicCollapse[index]}
                 />
-              </ListGroupItem>
+              </Card>
             );
           })}
           {this.context.userType ===
           "http://www.semanticweb.org/semanticweb#Teacher" ? (
-            <ListGroupItem>
-              <Button color="success" tag={Link} to={"/createTopic"}>
-                Create topic
-              </Button>
-            </ListGroupItem>
+            <Button color="success" tag={Link} to={"/createTopic"}>
+              <h2 className={"h5"}>+ Create topic</h2>
+            </Button>
           ) : null}
-        </ListGroup>
+        </div>
       </React.Fragment>
     );
   }

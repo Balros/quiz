@@ -28,17 +28,13 @@ class InfoTable extends Component {
                           item.lastChange ? (
                             new Date(item.lastSeenByTeacher) <
                             new Date(item.lastChange) ? (
-                              <Badge color="danger">Changed</Badge>
-                            ) : (
-                              <Badge color="success">Not Changed</Badge>
-                            )
-                          ) : item.lastSeenByStudent && item.lastChange ? (
-                            new Date(item.lastSeenByStudent) <
+                              <Badge color="danger">Updated</Badge>
+                            ) : null
+                          ) : item.lastSeenByStudent &&
+                          item.lastChange &&
+                          new Date(item.lastSeenByStudent) <
                             new Date(item.lastChange) ? (
-                              <Badge color="danger">Changed</Badge>
-                            ) : (
-                              <Badge color="success">Not Changed</Badge>
-                            )
+                            <Badge color="danger">Updated</Badge>
                           ) : null}
                           <br />
                           <small className="text-muted">
