@@ -164,14 +164,6 @@ class NewQuizAssignment extends Component {
     return this.props.match.params.id ? true : false;
   };
   onDragEnd = result => {
-    //TODO da sa pekne farebne odlisit kam sa da dropnut
-    //TODO rozsirit funkcionalitu
-    //1.(filter podla topicu, budu na sebe vsetky a podla
-    // toho aky filter sa zvoli taky column bude ukazany)
-    //2. nebudu miznut z povodnej tabulky len sa zafarbia
-    // aby bolo jasne ze otazka uz bola pouzita
-    //3. v topicoch bude polozka allTopics kde budu vsetky otazky pohromade
-    //tato tabulka sa bude menit na pozadi ked sa bude z roznych topicov pridavat
     const { destination, source, draggableId } = result;
     if (!destination) {
       return;

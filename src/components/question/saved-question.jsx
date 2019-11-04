@@ -176,7 +176,9 @@ class SavedQuestion extends Component {
                         {comment.author.name}
                       </ListGroupItemHeading>
                       <ListGroupItemText>{comment.text}</ListGroupItemText>
-                      <ListGroupItemText>{comment.date}</ListGroupItemText>
+                      <ListGroupItemText>
+                        {new Date(comment.date).toLocaleDateString()}
+                      </ListGroupItemText>
                     </ListGroupItem>
                   );
                 })

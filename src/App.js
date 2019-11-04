@@ -8,9 +8,9 @@ import {
   userTypes
 } from "./components/common/user-type-context";
 import NewQuestion from "./components/question/new-question";
-import TopicsOverview from "./components/topics/topics-overview";
+import TopicsOverview from "./components/question/topics-overview";
 import EditQuestion from "./components/question/question-overview";
-import CreateQuestionAssignment from "./components/topics/new-question-assignment";
+import CreateQuestionAssignment from "./components/question/new-question-assignment";
 import NewTopic from "./components/topics/new-topic";
 import { Container, Row, Col } from "reactstrap";
 import QuizAssignmentsOverview from "./components/quiz/quiz-assignments-overview";
