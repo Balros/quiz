@@ -17,6 +17,7 @@ import QuizAssignmentsOverview from "./components/quiz/quiz-assignments-overview
 import NewQuizAssignment from "./components/quiz/new-quiz-assignment";
 import QuizTake from "./components/quiz/quiz-take";
 import SideNav from "./components/header/side-nav";
+import Login from "./components/login";
 
 class App extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class App extends Component {
                 <Col xs="12" md="10">
                   <Switch>
                     <Route path="/" component={Home} exact />
+                    <Route path="/login" component={Login} />
                     <Route path="/questionGroups" component={TopicsOverview} />
                     <Route path="/newQuestion/:id" component={NewQuestion} />
                     <Route path="/newQuestion" component={NewQuestion} exact />
